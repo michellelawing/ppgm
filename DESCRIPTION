@@ -1,0 +1,9 @@
+Package: ppgm
+Title: PaleoPhyloGeographic Species Distribution Modeling and Evolution of Climate Niches
+Version: 0.0.0.9000
+Author: c(person(Michelle, Lawing, role = c(aut,cre), email = alawing@tamu.edu))
+Description: This package reconstructs paleoclimate niches using phylogenetic comparative methods and projects reconstructed niches onto paleoclimate maps. The user can specify various models of trait evolution or estimate the best fit model, include fossils, use one or multiple phylogenies for inference, and make animations of shifting suitable habitat through time. This model was first used in Lawing and Polly (2011).
+Depends: R (>= 3.2.0)
+License: GPL (>= 2)
+LazyData: true
+Maintainer: A. Michelle Lawing <alawing@tamu.edu>
