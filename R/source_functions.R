@@ -221,6 +221,7 @@ node.estimate <- function(treedata.obj,traitnum,model="BM",bounds=list(),control
 #node.estimate.fossils(ex_min,ex_max,fossils=biovarFossils,fossils.edges=F)
 
 node.estimate.fossils<-function(treedata_min,treedata_max,fossils=FALSE,fossils.edges=FALSE,model="BM", bounds=list(),control=list(),...){
+  require(geiger)
   require(phangorn)
   num_species<-length(treedata_min$data[,1])
   num_traits<-length(treedata_min$data[1,])
@@ -289,6 +290,7 @@ node.estimate.fossils<-function(treedata_min,treedata_max,fossils=FALSE,fossils.
 #ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))
 
 getTimeSlice<-function(timeSlice, tree, trait, model = "BM", plot.est=FALSE){
+  require(geiger)
   M<-dist.nodes(tree)
   treeage<-max(M)/2
   maxedge<-(as.numeric(treeage - M[tree$edge[,1],tree$edge[1,1]]))
@@ -321,6 +323,7 @@ getTimeSlice<-function(timeSlice, tree, trait, model = "BM", plot.est=FALSE){
 
 getEnvelopes<-function(treedata_min,treedata_max,node_est){
   require(ape)
+  require(geiger)
   num_traits<-length(treedata_min$data[1,])
   num_species<-length(treedata_min$data[,1])
   envelope<-array(NA, dim=c(2*num_species-1,5,num_traits))
@@ -386,6 +389,7 @@ plotTraitGram<-function(treedata_min,treedata_max,node_est,fossils=FALSE,which.b
 
 plotTraitGramMultiPhylo<-function(treedata_min,treedata_max,node_est,fossils=FALSE,which.biovars,path,alpha.trans=as.integer(255/(1+log(length(node_est))))){
   require(ape)
+  require(geiger)
   num_traits<-length(treedata_min[[1]]$data[1,])
   num_species<-length(treedata_min[[1]]$data[,1])
   data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
@@ -649,6 +653,8 @@ plotGeoRates<-function(geo_center,geo_size,time_int,trees,path=""){
 ppgm<-function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 2, only.biovars = TRUE, 
                which.biovars = c(1,12), path = "", plot.TraitGram = TRUE, plot.AnimatedMaps = TRUE, plot.GeoRates = TRUE, 
                plot.BumpChart = FALSE, bounds = list(), control = list(), use.paleoclimate = TRUE, verbose = TRUE){
+  require(ape)
+  require(geiger)
   #calculate the alpha.trans, which is the transparancy for all the trees plotted on top of each other
   alpha.trans <- as.integer(255 / (1 + log(length(trees))))
   #assign rownames to fossils
@@ -784,6 +790,10 @@ ppgm<-function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model
 #mess <- ppgmMESS(cem_min, cem_max, est, tree = ex_mytree, timeslice = c(2,5,13,20), which.biovars = c(1,6))
 
 ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", which.plot = "all"){
+  
+  require(ape)
+  require(geiger)
+  require(sp)
   
   #isotopically scaled paleoclimate bioclimate variables for North America
   data(paleoclimate)
