@@ -51,7 +51,7 @@ addfossil<- function(tree,mintime=0,maxtime=NA,name="fossil",edge=NA) {
 
 getBioclimVars<-function(occurrences,which.biovars=c(1,12)){
   require (fields)
-  load("data/paleoclimate.Rdata") #isotopically scaled paleoclimate bioclimate variables for North America
+  data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
   if(dim(occurrences)[2]<3){
     return ("ERROR: There are less than three columns for the occurrences input. You need to have at least three (Species Name, Longitude, Latitude).")
   }
@@ -349,7 +349,7 @@ plotTraitGram<-function(treedata_min,treedata_max,node_est,fossils=FALSE,which.b
   require(ape)
   num_traits<-length(treedata_min$data[1,])
   num_species<-length(treedata_min$data[,1])
-  load("data/paleoclimate.Rdata") #isotopically scaled paleoclimate bioclimate variables for North America
+  data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
   for(i in 1:num_traits){
     M<-dist.nodes(treedata_min$phy)[1,num_species+1]-dist.nodes(treedata_min$phy)[,num_species+1]
     temp <- array(unlist(node_est),dim=c(2,length(node_est[[1]][1,,1]),num_traits,length(node_est)))
@@ -388,7 +388,7 @@ plotTraitGramMultiPhylo<-function(treedata_min,treedata_max,node_est,fossils=FAL
   require(ape)
   num_traits<-length(treedata_min[[1]]$data[1,])
   num_species<-length(treedata_min[[1]]$data[,1])
-  load("data/paleoclimate.Rdata") #isotopically scaled paleoclimate bioclimate variables for North America
+  data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
   traitgram_min_min<-as.list(array(NA,dim=length(node_est)))
   traitgram_min_max<-as.list(array(NA,dim=length(node_est)))
   traitgram_max_min<-as.list(array(NA,dim=length(node_est)))
@@ -433,7 +433,7 @@ plotTraitGramMultiPhylo<-function(treedata_min,treedata_max,node_est,fossils=FAL
 
 plotAnimatedPPGM<-function(envelope,tree,filename="ppgm.gif",which.biovars,path=""){
   require(animation)
-  load("data/paleoclimate.Rdata") #isotopically scaled paleoclimate bioclimate variables for North America
+  data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
   temp_min<-lapply(1:length(paleoclimate),function(i){
     temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,2,j])})
     temp<-t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
@@ -472,7 +472,7 @@ plotAnimatedPPGMMultiPhylo<-function(envelope,tree,filename="ppgm.gif",which.bio
   require(Hmisc)
   if(path==""){out=getwd()}
   if(path!=""){out=paste(getwd(),"/",substr(path,1,nchar(path)-1),sep="")}
-  load("data/paleoclimate.Rdata") #isotopically scaled paleoclimate bioclimate variables for North America
+  data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
   temp_min<-as.list(array(NA,dim=length(tree)))
   temp_max<-as.list(array(NA,dim=length(tree)))
   richnesscount<-as.list(array(NA,dim=length(tree)))
@@ -530,7 +530,7 @@ plotAnimatedPPGMMultiPhylo<-function(envelope,tree,filename="ppgm.gif",which.bio
 getGeoRate<-function(envelope,tree,which.biovars){
   require(phangorn)
   require(fields)
-  load("data/paleoclimate.Rdata") #isotopically scaled paleoclimate bioclimate variables for North America
+  data(paleoclimate) #isotopically scaled paleoclimate bioclimate variables for North America
   temp_min<-lapply(1:length(paleoclimate),function(i){
     temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,2,j])})
     temp<-t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
@@ -666,7 +666,7 @@ ppgm<-function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model
   }
   #load paleocliamte data
   if(is.logical(use.paleoclimate)) {
-    load("data/paleoclimate.Rdata")
+    data(paleoclimate)
   } else {
     paleoclimate <- use.paleoclimate
   }
@@ -786,7 +786,7 @@ ppgm<-function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model
 ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", which.plot = "all"){
   
   #isotopically scaled paleoclimate bioclimate variables for North America
-  load("data/paleoclimate.Rdata")
+  data(paleoclimate)
   
   colorscheme <- colorRampPalette(c("blue","cyan","greenyellow","yellow","darkorange","red"))(250)
   
