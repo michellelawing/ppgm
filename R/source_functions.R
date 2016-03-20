@@ -877,7 +877,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
       #check on the size of graph and size of text
       if(which.plot == "all"){
         pdf(paste("MESS",timeslice[p],"Bio",which.biovars[b],".pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
-        plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="lightgray")
+        plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
         points(spdata,cex=1,pch=16,col=colorscheme[round(MESS_score[[p]][,b] - min(MESS_score[[p]][,b]) + 1)],xlim=c(-200,0),ylim=c(0,90))
         if(sum(ex_fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
@@ -901,7 +901,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
         }
         #print plots
         pdf(paste("MESS",timeslice[p],"Multi.pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
-        plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="lightgray")
+        plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
         points(spdata,cex=1,pch=16,col=colorscheme[round(apply(MESS_score[[p]], 1, min) - min(MESS_score[[p]]) + 1)],xlim=c(-200,0),ylim=c(0,90))
         if(sum(ex_fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
