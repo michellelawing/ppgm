@@ -11,7 +11,7 @@ Description: This package reconstructs paleoclimate niches using phylogenetic
     model, include fossils, use one or multiple phylogenies for inference, and make
     animations of shifting suitable habitat through time. This model was first used
     in Lawing and Polly (2011) doi: 10.1371/journal.pone.0028554.
-Depends: R (> 4.3.1)
+Depends: R (> 4.3.2)
 Imports: ape, fields, geiger, phangorn, phytools, sf, sp
 License: GPL (>= 3)
 Encoding: UTF-8
