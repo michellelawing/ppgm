@@ -11,6 +11,7 @@
 #' @return \code{est} for each time specified, a vector of estimates of the ancestral reconstruction along each edge
 #' @seealso \code{fitContinuous()}, \code{nodeEstimate()}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)

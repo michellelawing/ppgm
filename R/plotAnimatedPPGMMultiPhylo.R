@@ -10,6 +10,7 @@
 #' @details
 #' @return
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @export
 #' @examples
 #here
 #plotAnimatedPPGM(trialest$cem, beastLeache,which.biovars=c(1,4,15))

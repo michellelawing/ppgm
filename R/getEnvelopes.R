@@ -8,6 +8,7 @@
 #' @return An array containing climate envelopes for each node
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @seealso ppgmMESS()
+#' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)

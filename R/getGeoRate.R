@@ -11,6 +11,7 @@
 #' @return \code{geo_size} change in geographic size of suitable climate envelope
 #' @return \code{time_int} time intervals
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
+#' @export
 #' @seealso getEnvelopes()
 #' @examples
 #' data(beastLeache)

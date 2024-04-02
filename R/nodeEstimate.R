@@ -28,6 +28,7 @@
 #' @references Pagel M. (1999) Inferring the historical patterns of biological evolution. Nature, 401:877-884
 #' @references
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)
@@ -95,6 +96,7 @@ nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), cont
     phy <- as.phylo(phy$phy)
     M <- dist.nodes(phy) #uses GLS on [rescaled] phylo
   }
+  #Martins & Hansen (1997)
   nb.tip <- length(phy$tip.label)
   varAY <- M[-(1:nb.tip), 1:nb.tip]
   varY <- M[1:nb.tip,1:nb.tip]

@@ -6,9 +6,9 @@
 #' @param trees distribution of phylogenies
 #' @param path path to the directory where the results to be saved
 #' @details Creates plot with gray background of all pairwise comparisons of change in geo center and area through time. Blue points on top show the sequential change in geo center and expansion/contraction for all lineages
-#' @return
+#' @return plots of geo rate
 #' @seealso \code{getGeoRates}
-#' @references
+#' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
 #' data(beastLeache)

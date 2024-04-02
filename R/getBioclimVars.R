@@ -19,6 +19,7 @@
 #' @references Micheels, A. et al. (2011) Analysis of heat transport mechanisms from a Late Miocene model experiment with a fully-coupled atmosphere-ocean general circulation model. Palaeogeography, Palaeoclimatology, Palaeocology 304: 337-350
 #' @references Nix, H. and Busby, J. (1986) BIOCLIM, a bioclimatic analysis and prediction system. CSIRO annual report. CSIRO Division of Water and Land Resources, Canberra.
 #' @references Ruddiman, W. F. et al. (1989) Pleistocene evolution: Northern hemisphere ice sheets and North Atlantic Ocean. Paleoceanography 4: 353-412
+#' @export
 #' @examples
 #' require(fields)
 #' data(occurrences)

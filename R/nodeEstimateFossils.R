@@ -23,6 +23,7 @@
 #' @return \code{fitted}   if model = "estimate", returned values from the best fit model of evolution.
 #' @seealso \code{nodeEstimate}, \code{fitContinuous}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)

@@ -12,9 +12,8 @@
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.
 #' @param which.plot "all" plots trait maps and MESS, "mess" plots MESS map, "none" does not plot
 #' @details plots MESS maps of climate envelope model for specific time slices. Can either plot individual biovariables, or combined.
-#' @return
+#' @export
 #' @seealso \code{ppgm()}
-#' @references
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon
 #' @examples
 

@@ -10,6 +10,7 @@
 #' @return An object of the class "phylo".
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @seealso bind.tree, ape
+#' @export
 #' @examples
 #' mytree <- pbtree(n=20)
 #' newtree <- addFossil(mytree, mintime = max(mytree$edge.length)/2, maxtime= max(mytree$edge.length))

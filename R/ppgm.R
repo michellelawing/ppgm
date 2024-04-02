@@ -31,6 +31,7 @@
 #' @return model_max list of trees with maximum fitted model as specified in \code{model}
 #' @return node_est list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
+#' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)

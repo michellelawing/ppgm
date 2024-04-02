@@ -11,6 +11,7 @@
 #' @return \code{lineage} list of lineage specific nodes, as output from phangorn::Ancestors
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
 #' @seealso getEnvelopes() getGeoRate()
+#' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)

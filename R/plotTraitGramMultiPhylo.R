@@ -11,7 +11,7 @@
 #' @details
 #' @return
 #' @seealso plotTraitGram
-#' @references
+#' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
 
