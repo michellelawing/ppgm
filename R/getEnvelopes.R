@@ -4,10 +4,10 @@
 #' @param treedata_min tree data object with min estimate of the climate envelope for each species
 #' @param treedata_max tree data object with max estimate of the climate envelope for each species
 #' @param node_est the estimate of all the nodes, both min and max
-#' @details
+#' @details Function derives the minimum, and maximum of each climate variable
 #' @return An array containing climate envelopes for each node
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
-#' @seealso ppgmMESS()
+#' @seealso \code{ppgmMESS()}, \code{nodeEstimate}
 #' @export
 #' @examples
 #' data(beastLeache)

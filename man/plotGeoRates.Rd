@@ -17,6 +17,9 @@ plotGeoRates(geo_center, geo_size, time_int, trees, path="")
 
 \item{path}{path to the directory where the results to be saved}
 }
+\value{
+plots of geo rate
+}
 \description{
 plotGeoRates
 }

@@ -1,6 +1,6 @@
 #' @title nodeEstimate
 #' @description This function estimates the ancestral character states for continuous characters given a model of evolution or using the best fit model of evolution from the fitContinuous function in the geiger package. The ancestral states are estimated using GLS described in Martins and Hansen (1997).
-#' @usage nodeEstimate(treedata.obj, traitnum, model = "BM", plot.est = TRUE)
+#' @usage nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), control = list(), plot.est = TRUE)
 #' @param treedata.obj an object of the class "treedata".
 #' @param traitnum the column number of the trait within the treedata object to be reconstructed.
 #' @param model the model of evolution to use in the ancestral state reconstruction. Options are "estimate", "BM", "OU", "EB", "lambda", "kappa", "delta".
@@ -26,7 +26,6 @@
 #' @references Harmon, L. J. et al. (2010) Early bursts of body size and shape evolution are rare in comparative data. Evolution, 64:2385-2396
 #' @references Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the comparative method: a general approach to incorporating phylogenetic information into the analysis of interspecific data. American Naturalist, 149, 646–667.
 #' @references Pagel M. (1999) Inferring the historical patterns of biological evolution. Nature, 401:877-884
-#' @references
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @export
 #' @examples

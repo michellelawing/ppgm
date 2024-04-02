@@ -1,6 +1,6 @@
 #' @title ppgmConsensus
 #' @description ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. consensus version
-#' @usage ppgmConsensus(occurrences, fossils, tree, fossils.edges, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1,12), path = "", plotTraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, plot.BumpChart = F, bounds = list(), control = list(), use.paleoclimate = TRUE, verbose = TRUE)
+#' @usage ppgmConsensus(occurrences, fossils, tree, fossils.edges, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1,12), path = "", plotTraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
 #' @param tree phylogeny or phylogenies of species from first column of occurrences argument. Object of class phylo or multiphylo.
@@ -12,7 +12,6 @@
 #' @param plotTraitGram logical. Whether to plot a TraitGram
 #' @param plot.AnimatedMaps Logical. Whether to plot AnimatedMaps. Requires ImageMagick to be installed on the system.
 #' @param plot.GeoRates logical. Whether to plot GeoRates
-#' @param plot.BumpChart logical. Whether to plot BumpChart
 #' @param bounds parameters for the evolutionary model selected. If none are supplied the default is used
 #' @param control settings used for optimisation of model likelihood. Passes to \code{geiger::fitContinuous}
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
@@ -42,7 +41,7 @@
 
 ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                           which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,
-                          plot.BumpChart = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
+                          bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
   require(ape)
   require(geiger)
   #assign rownames to fossils

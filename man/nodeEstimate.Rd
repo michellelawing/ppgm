@@ -4,7 +4,7 @@
 \alias{nodeEstimate}
 \title{nodeEstimate}
 \usage{
-nodeEstimate(treedata.obj, traitnum, model = "BM", plot.est = TRUE)
+nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), control = list(), plot.est = TRUE)
 }
 \arguments{
 \item{treedata.obj}{an object of the class "treedata".}

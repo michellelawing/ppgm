@@ -19,6 +19,9 @@ An array containing climate envelopes for each node
 \description{
 This function gets the bioclimate envelopes of species and nodes.
 }
+\details{
+Function derives the minimum, and maximum of each climate variable
+}
 \examples{
 data(beastLeache)
 data(occurrences)
@@ -32,7 +35,7 @@ node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
 }
 \seealso{
-ppgmMESS()
+\code{ppgmMESS()}, \code{nodeEstimate}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard

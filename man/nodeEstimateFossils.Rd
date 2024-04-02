@@ -4,7 +4,7 @@
 \alias{nodeEstimateFossils}
 \title{nodeEstimateFossils}
 \usage{
-nodeEstimateFossils(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list())
+nodeEstimateFossils(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list())
 }
 \arguments{
 \item{treedata_min}{tree data object with min estimate of the climate envelope – list where first object is phylogeny, and second object is array of species with climate data variables (species must match)}
@@ -56,13 +56,14 @@ function adds fossils to trees according to \code{addFossil()}, then passes to \
 data(beastLeache)
 data(occurrences)
 data(new_fossils)
-biofossils <- getBioclimVars(new_fossils,c(1,4,15))
+biofossils <- getBioclimVars(new_fossils,1)
 rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
 ex_min <- treedata(beastLeache[[1]], sp_data_min)
 ex_max <- treedata(beastLeache[[1]], sp_data_max)
-example_nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max,model="BM", fossils=biofossils, bounds=list(sigsq = c(min = 0, max = 1000000), SE = c(0, 0.1)))
+colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
+example_nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max,model="BM", fossils=biofossils, bounds=list(sigsq = c(min = 0, max = 1000000)))
 }
 \seealso{
 \code{nodeEstimate}, \code{fitContinuous}

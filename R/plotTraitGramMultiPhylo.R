@@ -1,6 +1,6 @@
 #' @title plotTraitGramMultiPhylo
 #' @description Combine the node estimates based on random or specified fossil placement and plot them on a phylotrait gram in a specified directory.
-#' @usage plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path, alpha.trans=as.integer(255/1+log(length(node_est))))
+#' @usage plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="", alpha.trans=as.integer(255/(1+log(length(node_est)))))
 #' @param treedata_min tree data object with min estimate of the climate envelope
 #' @param treedata_max tree data object with max estimate of the climate envelope
 #' @param node_est the estimate of all the nodes, both min and max

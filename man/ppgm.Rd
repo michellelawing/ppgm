@@ -4,7 +4,7 @@
 \alias{ppgm}
 \title{ppgm}
 \usage{
-ppgm(occurrences, fossils, tree, fossils.edges, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1,12), path = "", plotTraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, plot.BumpChart = F, bounds = list(), control = list(), use.paleoclimate = TRUE, verbose = TRUE)
+ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 }
 \arguments{
 \item{occurrences}{a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.}
@@ -24,8 +24,6 @@ ppgm(occurrences, fossils, tree, fossils.edges, model = "BM", permut=1, only.bio
 \item{plot.AnimatedMaps}{logical. Whether to plot AnimatedMaps. Requires ImageMagick to be installed on the system.}
 
 \item{plot.GeoRates}{logical. Whether to plot GeoRates}
-
-\item{plot.BumpChart}{logical. Whether to plot BumpChart}
 
 \item{bounds}{parameters for the evolutionary model selected. If none are supplied the default is used}
 

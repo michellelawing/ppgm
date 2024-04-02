@@ -4,7 +4,7 @@
 \alias{plotTraitGramMultiPhylo}
 \title{plotTraitGramMultiPhylo}
 \usage{
-plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path, alpha.trans=as.integer(255/1+log(length(node_est))))
+plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="", alpha.trans=as.integer(255/(1+log(length(node_est)))))
 }
 \arguments{
 \item{treedata_min}{tree data object with min estimate of the climate envelope}

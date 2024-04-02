@@ -1,6 +1,6 @@
 #' @title plotAnimatedPPGM
 #' @description This function creates an animated gif showing the change in modelled suitable habitat through time in geographic space.
-#' @usage plotAnimatedPPGM(envelope,tree, filename, which.biovars, path)
+#' @usage plotAnimatedPPGM(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 #' @param envelope the min and max envelope of each lineage for each time slice
 #' @param tree the phylogeny or multiple phylogenies that show the relationship between species
 #' @param filename desired filename of output

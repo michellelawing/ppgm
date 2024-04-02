@@ -4,7 +4,7 @@
 \alias{plotAnimatedPPGM}
 \title{plotAnimatedPPGM}
 \usage{
-plotAnimatedPPGM(envelope,tree, filename, which.biovars, path)
+plotAnimatedPPGM(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 }
 \arguments{
 \item{envelope}{the min and max envelope of each lineage for each time slice}
@@ -18,6 +18,9 @@ plotAnimatedPPGM(envelope,tree, filename, which.biovars, path)
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).}
+}
+\value{
+An animated gif of species through time
 }
 \description{
 This function creates an animated gif showing the change in modelled suitable habitat through time in geographic space.

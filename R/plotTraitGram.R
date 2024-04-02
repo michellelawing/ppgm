@@ -1,6 +1,6 @@
 #' @title plotTraitGram
 #' @description Combine the node estimates based on random or specified fossil placement and plot them on a phylotraitgram in a specified directory.
-#' @usage plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="")
+#' @usage plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 #' @param treedata_min a tree data object with the min estimate of the climate envelope
 #' @param treedata_max a tree data object with the max estimate of the climate envelope
 #' @param node_est the estimate of all the nodes, both min and max

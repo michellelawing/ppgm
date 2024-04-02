@@ -4,7 +4,7 @@
 \alias{plotTraitGram}
 \title{plotTraitGram}
 \usage{
-plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="")
+plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 }
 \arguments{
 \item{treedata_min}{a tree data object with the min estimate of the climate envelope}

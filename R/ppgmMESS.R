@@ -28,7 +28,7 @@
 
 #mess <- ppgmMESS(test_fossil_con$cem[[1]], test_fossil_con$cem[[3]],test_fossil_con$node_est,tree=ex_mytree,which.biovars=c(1), timeslice = c(5,10))
 
-ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = "all"){
+ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none")){
 
   require(ape)
   require(geiger)
