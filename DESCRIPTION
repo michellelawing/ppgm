@@ -2,18 +2,15 @@ Package: PPGM
 Type: Package
 Title: PaleoPhyloGeographic Modeling of Niches and Species Distributions
 Version: 1.0.0
-Authors@R: c(person("A. Michelle","Lawing", role = c("aut","cre"), email = "alawing@tamu.edu"),
+Author: c(person("A. Michelle","Lawing", role = c("aut","cre"), email = "alawing@tamu.edu"),
 	person("Alexandra", "Howard", role = "aut", email = "alexandra.howard@tamu.edu),
-	person("Maria-Aleja", "Hurtado-Materon", role = "aut")
-Author: A. Michelle Lawing [aut, cre],
-	Alexandra Howard [aut],
-	Maria-Aleja Hurtado-Materon [aut]
+	person("Maria-Aleja", "Hurtado-Materon", role = "aut"))
 Description: This package reconstructs paleoclimate niches using phylogenetic
     comparative methods and projects reconstructed niches onto paleoclimate maps.
     The user can specify various models of trait evolution or estimate the best fit
     model, include fossils, use one or multiple phylogenies for inference, and make
     animations of shifting suitable habitat through time. This model was first used
-    in Lawing and Polly (2011).
+    in Lawing and Polly (2011) doi: 10.1371/journal.pone.0028554.
 Depends: R (> 4.3.1)
 Imports: ape, fields, geiger, phangorn, phytools, sf, sp
 License: GPL (>= 3)
