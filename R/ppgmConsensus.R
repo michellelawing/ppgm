@@ -1,6 +1,6 @@
 #' @title ppgmConsensus
 #' @description ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. consensus version
-#' @usage ppgmConsensus(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+#' @usage ppgmConsensus(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
 #' @param trees phylogeny of species from first column of occurrences argument. Object of class phylo.
@@ -37,10 +37,10 @@
 #' data(new_fossils)
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
 #' ex_mytree <- beastLeache[[3]] #single tree
-#' test_fossil_con <- ppgmConsensus(occurrences = occurrences, fossils = new_fossils,trees = ex_mytree, fossils.edges = F, model = "BM", permut = 5, which.biovars = c(1), path = "plots/", plot.TraitGram = TRUE, plot.AnimatedMaps = TRUE,plot.GeoRates = TRUE, bounds = bounds, control = list(niter = 20))
+#' test_fossil_con <- ppgmConsensus(occurrences = occurrences, fossils = new_fossils,trees = ex_mytree, fossils.edges = F, model = "BM", permut = 5, which.biovars = c(1), bounds = bounds, control = list(niter = 20))
 
 ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
-                          which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,
+                          which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE,
                           bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
   require(ape)
   require(geiger)
