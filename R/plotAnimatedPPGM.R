@@ -4,6 +4,7 @@
 #' @param envelope the min and max envelope of each lineage for each time slice
 #' @param tree the phylogeny or multiple phylogenies that show the relationship between species
 #' @param filename desired filename of output
+#' @param which.biovars A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).
 #' @param path path to the directory where the results should be saved
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).

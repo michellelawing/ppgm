@@ -8,7 +8,6 @@
 #' @param model the model of evolution to use in the ancestral state reconstruction. Options are "estimate", "BM", "OU", "EB", "lambda", "kappa", "delta".
 #' @param bounds bounds used for the model, passes to \code{fitContinuous()}, uses default if none specified.
 #' @param control setting used for optimization of the model likelihood. Passes to \code{fitContinuous()}.
-#' @param … arguments to pass to \code{fitContinuous}.
 #' @details function adds fossils to trees according to \code{addFossil()}, then passes to \code{nodeEstimate()}.
 #' @return an object of the class "nodeEstimate".
 #' @return \code{model}    if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model.
@@ -38,7 +37,7 @@
 #' example_nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max,model="BM", fossils=biofossils, bounds=list(sigsq = c(min = 0, max = 1000000)))
 
 
-nodeEstimateFossils <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list(), ...){
+nodeEstimateFossils <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list()){
   require(geiger)
   require(phangorn)
   num_species<-length(treedata_min$data[,1])

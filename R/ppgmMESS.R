@@ -4,6 +4,7 @@
 #' @param cem_min the cem min output from the ppgm function. cbind() if there are multiple variables.
 #' @param cem_max the cem max output from the ppgm function. cbind() if there are multiple variables.
 #' @param est the node_est output from the ppgm function, in list format. [tree][1][min and max][no.of species]
+#' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.
 #' @param timeslice the time in million of years ago to project MESS maps (0 to 20). can handle single timeslice or vector of times.
 #' @param tree the phylogeny or multiple phylogenies that show the relationship between species
 #' @param which.biovars the biovariable number(s) between 1 and 19. handles vectors.

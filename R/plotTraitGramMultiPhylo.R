@@ -1,13 +1,14 @@
 #' @title plotTraitGramMultiPhylo
 #' @description Combine the node estimates based on random or specified fossil placement and plot them on a phylotrait gram in a specified directory.
-#' @usage plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="", alpha.trans=as.integer(255/(1+log(length(node_est)))))
+#' @usage plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="")
 #' @param treedata_min tree data object with min estimate of the climate envelope
 #' @param treedata_max tree data object with max estimate of the climate envelope
 #' @param node_est the estimate of all the nodes, both min and max
-#' @param fossils
+#' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
 #' @param which.biovars A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).
+#' @param path path to the directory where the results should be saved
 #' @details
 #' @return
 #' @seealso plotTraitGram
@@ -16,9 +17,10 @@
 #' @examples
 
 
-plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="", alpha.trans=as.integer(255/(1+log(length(node_est))))){
+plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path=""){
   require(ape)
   require(geiger)
+  alpha.trans=as.integer(255/(1+log(length(node_est))))
   num_traits<-length(treedata_min[[1]]$data[1,])
   num_species<-length(treedata_min[[1]]$data[,1])
   if(use.paleoclimate) {

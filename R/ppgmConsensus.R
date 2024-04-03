@@ -1,15 +1,16 @@
 #' @title ppgmConsensus
 #' @description ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. consensus version
-#' @usage ppgmConsensus(occurrences, fossils, tree, fossils.edges, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1,12), path = "", plotTraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, verbose = TRUE)
+#' @usage ppgmConsensus(occurrences, fossils = FALSE, tree, fossils.edges = FALSE, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1:19), path = "", plotTraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
-#' @param tree phylogeny or phylogenies of species from first column of occurrences argument. Object of class phylo or multiphylo.
+#' @param trees phylogeny of species from first column of occurrences argument. Object of class phylo.
 #' @param fossils.edges a vector of edges that the fossils belong to. Must be in the same order of the fossils argument. If fossils.edges is false, the the function randomly assigns the location of the fossils depending on the age (see details for more information).
 #' @param model the model of evolution to use to estimate ancestor nodes. Argument is passed onto to function nodeEstimate.
 #' @param permut the number of times to randomly place fossils in phylogeny and estimate ancestor states.
+#' @param only.biovars logical. If FALSE, user must include biovariables in occurrence object.
 #' @param which.biovars a vector with the biovars to include in model (see www.worldclim.org for a list of biovars). If "ALL", then all 19 biovars are included in analysis.
 #' @param path path to the directory where the results should be saved.
-#' @param plotTraitGram logical. Whether to plot a TraitGram
+#' @param plot.TraitGram logical. Whether to plot a TraitGram
 #' @param plot.AnimatedMaps Logical. Whether to plot AnimatedMaps. Requires ImageMagick to be installed on the system.
 #' @param plot.GeoRates logical. Whether to plot GeoRates
 #' @param bounds parameters for the evolutionary model selected. If none are supplied the default is used

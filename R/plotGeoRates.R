@@ -11,18 +11,6 @@
 #' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
-#' data(beastLeache)
-#' data(occurrences)
-#' tree <- beastLeache[[25]]
-#' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-#' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-#' treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F)
-#' treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-#' full_est <- nodeEstimateFossils(treedata_min,treedata_max)
-#' node_est <- full_est$est
-#' example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-#' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
-#' plotGeoRatesCon(example_getGeoRate$geo_center,example_getGeoRate$geo_size,example_getGeoRate$time_int, trees = trees[[1]])
 
 
 plotGeoRates <- function(geo_center, geo_size, time_int, trees, path=""){
@@ -60,6 +48,32 @@ plotGeoRates <- function(geo_center, geo_size, time_int, trees, path=""){
   par(mfrow=c(1,1),mar=c(5,4,4,2),mgp=c(3,1,0))
   dev.off()
 }
+
+#' @title plotGeoRatesCon
+#' @usage plotGeoRatesCon(geo_center, geo_size, time_int, trees, path="")
+#' @param geo_center change in geographic center of suitable climate envelope, see
+#' @param geo_size change in geographic size of suitable climate envelope
+#' @param time_int time intervals to plot
+#' @param trees distribution of phylogenies
+#' @param path path to the directory where the results to be saved
+#' @details Creates plot with gray background of all pairwise comparisons of change in geo center and area through time. Blue points on top show the sequential change in geo center and expansion/contraction for all lineages
+#' @return plots of geo rate
+#' @seealso \code{getGeoRates}
+#' @export
+#' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @examples
+#' data(beastLeache)
+#' data(occurrences)
+#' tree <- beastLeache[[25]]
+#' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
+#' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
+#' treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F)
+#' treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+#' full_est <- nodeEstimateFossils(treedata_min,treedata_max)
+#' node_est <- full_est$est
+#' example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
+#' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
+#' plotGeoRatesCon(example_getGeoRate$geo_center,example_getGeoRate$geo_size,example_getGeoRate$time_int, trees = trees[[1]])
 
 plotGeoRatesCon <- function(geo_center, geo_size, time_int, trees, path=""){
   jpeg(paste(path,"geo_rates.jpg",sep=""),width=960,height=960,quality=100,pointsize=20)

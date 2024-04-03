@@ -4,12 +4,12 @@
 #' @param treedata_min a tree data object with the min estimate of the climate envelope
 #' @param treedata_max a tree data object with the max estimate of the climate envelope
 #' @param node_est the estimate of all the nodes, both min and max
+#' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.
 #' @param which.biovars A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).
 #' @param path path to the directory where the results should be saved
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
-#' @details
-#' @return
+#' @return a trait gram for minimum and maximum of biovariables
 #' @seealso plotTraitGramMultiPhylo
 #' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard

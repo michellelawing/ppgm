@@ -3,13 +3,14 @@
 #' @usage ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
-#' @param tree phylogeny or phylogenies of species from first column of occurrences argument. Object of class phylo or multiphylo.
+#' @param trees phylogenies of species from first column of occurrences argument. Object of class multiphylo.
 #' @param fossils.edges a vector of edges that the fossils belong to. Must be in the same order of the fossils argument. If fossils.edges is false, the the function randomly assigns the location of the fossils depending on the age (see details for more information).
 #' @param model the model of evolution to use to estimate ancestor nodes. Argument is passed onto to function nodeEstimate.
 #' @param permut the number of times to randomly place fossils in phylogeny and estimate ancestor states.
+#' @param only.biovars logical. If FALSE, user must include biovariables in occurrence object.
 #' @param which.biovars a vector with the biovars to include in model (see www.worldclim.org for a list of biovars). If "ALL", then all 19 biovars are included in analysis.
 #' @param path path to the directory where the results should be saved.
-#' @param plotTraitGram logical. Whether to plot a TraitGram
+#' @param plot.TraitGram logical. Whether to plot a TraitGram
 #' @param plot.AnimatedMaps logical. Whether to plot AnimatedMaps. Requires ImageMagick to be installed on the system.
 #' @param plot.GeoRates logical. Whether to plot GeoRates
 #' @param bounds parameters for the evolutionary model selected. If none are supplied the default is used
@@ -36,8 +37,8 @@
 #' data(occurrences)
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
 #' ex_mytree <- sample(beastLeache,size=10) #small number of trees used for example only to save processing time, we recommend at least 100 trees
-#' ex_occurrences <- occurrences %>% group_by(Species) %>% slice_sample(n=100) #random sample to reduce computational time for example, use all occurrences for data analysis
 #' test_ppgm <- ppgm(occurrences = occurrences,trees = ex_mytree, model = "BM", which.biovars = c(1), bounds = bounds, control = list(niter = 20), plot.TraitGram=T)
+
 
 ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                 which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,

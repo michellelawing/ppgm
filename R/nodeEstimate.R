@@ -1,13 +1,12 @@
 #' @title nodeEstimate
 #' @description This function estimates the ancestral character states for continuous characters given a model of evolution or using the best fit model of evolution from the fitContinuous function in the geiger package. The ancestral states are estimated using GLS described in Martins and Hansen (1997).
-#' @usage nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), control = list(), plot.est = TRUE)
+#' @usage nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), control = list(), plot.est = FALSE)
 #' @param treedata.obj an object of the class "treedata".
 #' @param traitnum the column number of the trait within the treedata object to be reconstructed.
 #' @param model the model of evolution to use in the ancestral state reconstruction. Options are "estimate", "BM", "OU", "EB", "lambda", "kappa", "delta".
 #' @param plot.est logical. whether or not to plot the traitgram of the estimated ancestor states.
 #' @param bounds bounds used for the model, passes to \code{fitContinuous()}, uses default if none specified.
 #' @param control setting used for optimization of the model likelihood. Passes to \code{fitContinuous()}.
-#' @param ... arguments to pass to \code{fitContinuous()}
 #' @details See the \code{fitContinuous()} details for descriptions of the models of evolution and parameter estimation. \code{nodeEstimate()} currently supports the following models of evolution: Brownian motion (Felsenstein, 1973), Ornstein-Uhlenbeck (Butler and King, 2004), early-burst (Harmon et al., 2010), lambda (Pagel, 1999), kappa (Pagel, 1999), and delta (Pagel, 1999).
 #' @return an object of the class "nodeEstimate".
 #' @return \code{model}    if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model.
@@ -36,7 +35,7 @@
 #' nodeEstimate(ex, 1, model = 'OU') #runs OU model
 
 
-nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), control=list(), plot.est=FALSE,...) {
+nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), control=list(), plot.est=FALSE) {
   require(geiger)
   x <- treedata.obj$data[,traitnum]
   phy <- treedata.obj$phy
