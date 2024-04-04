@@ -70,8 +70,8 @@ If the 19 bioclimate variables are not supplied with the occurrences or with the
 For Michelle: fix to work with the nice plots on multiple trees, and check and see if it works when no suitable habitat is identified. also, make option to print any animated lineage through time?
 }
 \examples{
-data(beastLeache)
-data(occurrences)
+utils::data(beastLeache)
+utils::data(occurrences)
 bounds <- list(sigsq = c(min = 0, max = 1000000))
 ex_mytree <- sample(beastLeache,size=10) #small number of trees used for example only to save processing time, we recommend at least 100 trees
 test_ppgm <- ppgm(occurrences = occurrences,trees = ex_mytree, model = "BM", which.biovars = c(1), bounds = bounds, control = list(niter = 20), plot.TraitGram=T)

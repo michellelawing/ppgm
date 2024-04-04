@@ -31,9 +31,6 @@ mytree <- pbtree(n=20)
 newtree <- addFossil(mytree, mintime = max(mytree$edge.length)/2, maxtime= max(mytree$edge.length))
 plot(newtree)
 }
-\seealso{
-bind.tree, ape
-}
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard
 }

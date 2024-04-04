@@ -11,6 +11,8 @@
 #' @return \code{lineage} list of lineage specific nodes, as output from phangorn::Ancestors
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
 #' @seealso getEnvelopes() getGeoRate()
+#' @importFrom utils data
+#' @importFrom phangorn Ancestors
 #' @export
 #' @examples
 #' data(beastLeache)
@@ -46,7 +48,7 @@ getLineageClimate <- function(envelope, tree, which.biovars, use.paleoclimate=TR
     temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,5,j])})
     temp <- t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
-  lineage <- lapply(1:length(temp_min[[1]][1,]),function(i) {c(i,Ancestors(tree,i))})
+  lineage <- lapply(1:length(temp_min[[1]][1,]),function(i) {c(i,phangorn::Ancestors(tree,i))})
   matchedClim <- list()
   #for every lineage, for every time slice, which lineages are present and then which points is lineage present
   #matchedClim: what points is that lineage climate present

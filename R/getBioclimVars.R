@@ -19,17 +19,17 @@
 #' @references Micheels, A. et al. (2011) Analysis of heat transport mechanisms from a Late Miocene model experiment with a fully-coupled atmosphere-ocean general circulation model. Palaeogeography, Palaeoclimatology, Palaeocology 304: 337-350
 #' @references Nix, H. and Busby, J. (1986) BIOCLIM, a bioclimatic analysis and prediction system. CSIRO annual report. CSIRO Division of Water and Land Resources, Canberra.
 #' @references Ruddiman, W. F. et al. (1989) Pleistocene evolution: Northern hemisphere ice sheets and North Atlantic Ocean. Paleoceanography 4: 353-412
+#' @importFrom fields rdist.earth
+#' @importFrom utils data
 #' @export
 #' @examples
-#' require(fields)
-#' data(occurrences)
+#' utils::data(occurrences)
 #' subsetoccur <- head(occurrences[,c(1:3)], n=100L)
 #' biooccur <- getBioclimVars(subsetoccur,which.biovars=c(3,5))
 #' #returns data frame with bioclimate variables 3 and 5 for occurrence data
 
 
 getBioclimVars <- function(occurrences, which.biovars=c(1,12), use.paleoclimate=TRUE, paleoclimateUser=NULL){
-  require (fields)
   if(use.paleoclimate) {
     data(paleoclimate) #uses paleoclimate data from package
   } else {
@@ -48,7 +48,7 @@ getBioclimVars <- function(occurrences, which.biovars=c(1,12), use.paleoclimate=
   }
   if(dim(occurrences)[2]==3){
     if(!is.numeric(occurrences[1,1])){
-      calc_dist<-rdist.earth(paleoclimate[[1]][,2:3],occurrences[,2:3])
+      calc_dist<-fields::rdist.earth(paleoclimate[[1]][,2:3],occurrences[,2:3])
       min_dist<-1:length(occurrences[,1])
       for(i in 1:length(occurrences[,1])){
         min_dist[i]<-which.min(calc_dist[,i])
@@ -60,7 +60,7 @@ getBioclimVars <- function(occurrences, which.biovars=c(1,12), use.paleoclimate=
       temp <- array(NA, dim=c(length(occurrences[,1]), length(which.biovars)))
       for(i in 1:length(occurrences[,1])){
         anothertemp <- as.matrix(paleoclimate[[as.integer(occurrences[i,1])]][,2:3])
-        calc_dist <- rdist.earth(anothertemp,t(as.matrix(occurrences[i,2:3])))
+        calc_dist <- fields::rdist.earth(anothertemp,t(as.matrix(occurrences[i,2:3])))
         temp[i,] <- unlist(paleoclimate[[as.integer(occurrences[i,1])]][which.min(calc_dist),which.biovars+3])
       }
       occurrences <- cbind(occurrences,temp)

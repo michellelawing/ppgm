@@ -30,11 +30,15 @@
 #' @return model_max list of trees with maximum fitted model as specified in \code{model}
 #' @return node_est list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
+#' @importFrom utils data
+#' @importFrom ape is.binary
+#' @importFrom ape multi2di
+#' @importFrom geiger treedata
 #' @export
 #' @examples
-#' data(beastLeache)
-#' data(occurrences)
-#' data(new_fossils)
+#' utils::data(beastLeache)
+#' utils::data(occurrences)
+#' utils::data(new_fossils)
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
 #' ex_mytree <- beastLeache[[3]] #single tree
 #' test_fossil_con <- ppgmConsensus(occurrences = occurrences, fossils = new_fossils,trees = ex_mytree, fossils.edges = F, model = "BM", permut = 5, which.biovars = c(1), bounds = bounds, control = list(niter = 20))
@@ -42,8 +46,6 @@
 ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                           which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE,
                           bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
-  require(ape)
-  require(geiger)
   #assign rownames to fossils
   if(length(fossils)!=1){rownames(fossils)<-paste("fossil",1:length(fossils[,1]),sep="")}
   #Extract bioclim variables for species occurrences, if not supplied by user
@@ -59,7 +61,7 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
   }
   #load paleoclimate data
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    utils::data(paleoclimate) #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -86,10 +88,10 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
   #    plotBumpChart(sp_data_mean,path)  #broken?? Error: breaks and labels have unequal lengths
   #  }
   #Check if phylogeny is dichotomous, if not, make it dichotomous
-  if(!is.binary(trees)){trees<-multi2di(trees)}
+  if(!ape::is.binary(trees)){trees<-ape::multi2di(trees)}
   #make treedata object for bioclimate envelopes and phylogeny
-  treedata_min<-treedata(trees,sp_data_min,sort=TRUE,warnings=F)  #matches species in tree with species in data
-  treedata_max<-treedata(trees,sp_data_max,sort=TRUE,warnings=F)
+  treedata_min<-geiger::treedata(trees,sp_data_min,sort=TRUE,warnings=F)  #matches species in tree with species in data
+  treedata_max<-geiger::treedata(trees,sp_data_max,sort=TRUE,warnings=F)
   colnames(treedata_min$data)<-colnames(treedata_max$data)<-paste("bio",which.biovars,sep="")  #labels biovars
   #to estimate nodes, place fossils randomly or as specified on edges from fossils.edges argument
   full_est <- list()

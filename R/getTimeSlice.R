@@ -11,18 +11,20 @@
 #' @return \code{est} for each time specified, a vector of estimates of the ancestral reconstruction along each edge
 #' @seealso \code{fitContinuous()}, \code{nodeEstimate()}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @importFrom ape dist.nodes
+#' @importFrom geiger treedata
+#' @importFrom graphics points
 #' @export
 #' @examples
 #' data(beastLeache)
 #' data(occurrences)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-#' treedata_min <- treedata(beastLeache[[1]], sp_data_min)
+#' treedata_min <- geiger::treedata(beastLeache[[1]], sp_data_min)
 #' ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
 #' ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))
 
 
 getTimeSlice <- function(timeSlice, tree, trait, model = "BM", plot.est=FALSE){
-  require(geiger)
   M <- dist.nodes(tree)
   treeage <- max(M)/2
   maxedge <- (as.numeric(treeage - M[tree$edge[,1],tree$edge[1,1]]))
@@ -41,7 +43,7 @@ getTimeSlice <- function(timeSlice, tree, trait, model = "BM", plot.est=FALSE){
     hldtime[[i]] <- hld
   }
   if(plot.est){
-    xx <- nodeEstimate(treedata(tree, trait[1:(tree$edge[1,1]-1)]),1, model = model, plot.est = plot.est)
+    xx <- nodeEstimate(geiger::treedata(tree, trait[1:(tree$edge[1,1]-1)]),1, model = model, plot.est = plot.est)
     for(i in 1:length(timeSlice)){
       points(array(max(M)/2-timeSlice[i],dim=length(hldtime[[i]])),hldtime[[i]])
     }

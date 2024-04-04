@@ -11,6 +11,10 @@
 #' @return \code{geo_size} change in geographic size of suitable climate envelope
 #' @return \code{time_int} time intervals
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
+#' @importFrom utils data
+#' @importFrom fields rdist.earth
+#' @importFrom phangorn Ancestors
+#' @importFrom stats dist
 #' @export
 #' @seealso getEnvelopes()
 #' @examples
@@ -28,8 +32,6 @@
 #' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
 
 getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL){
-  require(phangorn)
-  require(fields)
   if(use.paleoclimate) {
     data(paleoclimate) #uses paleoclimate data from package
   } else {
@@ -47,7 +49,7 @@ getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, pal
     temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,5,j])})
     temp <- t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
-  lineage <- lapply(1:length(temp_min[[1]][1,]),function(i) {c(i,Ancestors(tree,i))})
+  lineage <- lapply(1:length(temp_min[[1]][1,]),function(i) {c(i,phangorn::Ancestors(tree,i))})
   geo_center <- array(NA, dim=c(length(paleoclimate),length(lineage),2))
   geo_size <- array(NA, dim=c(length(paleoclimate),length(lineage)))
   #for every lineage, for every time slice, which lineages are present and then which points is lineage present
@@ -67,10 +69,10 @@ getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, pal
   C <- array(NA, dim=c(length(lineage),length(paleoclimate),length(paleoclimate)))
   A <- array(NA, dim=c(length(lineage),length(paleoclimate),length(paleoclimate)))
   for(i in 1:length(lineage)){
-    C[i,,] <- rdist.earth(geo_center[,i,],geo_center[,i,],miles=FALSE)
+    C[i,,] <- fields::rdist.earth(geo_center[,i,],geo_center[,i,],miles=FALSE)
     A[i,,] <- sapply(1:length(paleoclimate),function(x){geo_size[x,i]-geo_size[,i]})
   }
-  T <- as.matrix(dist(1:length(paleoclimate),diag=TRUE))
+  T <- as.matrix(stats::dist(1:length(paleoclimate),diag=TRUE))
   return(list(geo_center=C, geo_size=A, time_int=T))
 }
 

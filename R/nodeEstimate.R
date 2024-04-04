@@ -26,6 +26,12 @@
 #' @references Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the comparative method: a general approach to incorporating phylogenetic information into the analysis of interspecific data. American Naturalist, 149, 646–667.
 #' @references Pagel M. (1999) Inferring the historical patterns of biological evolution. Nature, 401:877-884
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @importFrom geiger fitContinuous
+#' @importFrom methods is
+#' @importFrom phytools rescale
+#' @importFrom ape dist.nodes
+#' @importFrom ape as.phylo
+#' @importFrom graphics lines
 #' @export
 #' @examples
 #' data(beastLeache)
@@ -36,22 +42,21 @@
 
 
 nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), control=list(), plot.est=FALSE) {
-  require(geiger)
   x <- treedata.obj$data[,traitnum]
   phy <- treedata.obj$phy
   was.estimated <- FALSE
   fitted <- model
   if(model=="estimate"){
     models=c("BM","OU","EB","lambda","kappa","delta")
-    BM=try(fitContinuous(phy,x,model="BM",bounds=bounds,control=control),silent=T)
-    OU=try(fitContinuous(phy,x,model="OU",bounds=bounds,control=control),silent=T)
-    EB=try(fitContinuous(phy,x,model="EB",bounds=bounds, control=control),silent=T)
-    lambda=try(fitContinuous(phy,x,model="lambda",bounds=bounds,control=control),silent=T)
-    kappa=try(fitContinuous(phy,x,model="kappa",bounds=bounds,control=control),silent=T)
-    delta=try(fitContinuous(phy,x,model="delta",bounds=bounds,control=control),silent=T)
+    BM=try(geiger::fitContinuous(phy,x,model="BM",bounds=bounds,control=control),silent=T)
+    OU=try(geiger::fitContinuous(phy,x,model="OU",bounds=bounds,control=control),silent=T)
+    EB=try(geiger::fitContinuous(phy,x,model="EB",bounds=bounds, control=control),silent=T)
+    lambda=try(geiger::fitContinuous(phy,x,model="lambda",bounds=bounds,control=control),silent=T)
+    kappa=try(geiger::fitContinuous(phy,x,model="kappa",bounds=bounds,control=control),silent=T)
+    delta=try(geiger::fitContinuous(phy,x,model="delta",bounds=bounds,control=control),silent=T)
     trait.macroevo <- list()
     for (mod in 1:length(models)){
-      if(is(eval(parse(text=models[mod])),"gfit")) {
+      if(methods::is(eval(parse(text=models[mod])),"gfit")) {
         trait.macroevo[[mod]] <- eval(parse(text=models[mod]))$opt$aicc
       } else {
         trait.macroevo[[mod]] <- NA
@@ -60,61 +65,61 @@ nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), cont
     model <- models[which.min(unlist(trait.macroevo))]
     fitted <- list()
     for (mod in 1:length(models)){
-      if(is(eval(parse(text=models[mod])),"gfit")) {
+      if(methods::is(eval(parse(text=models[mod])),"gfit")) {
         fitted[[models[mod]]] <- eval(parse(text=models[mod]))$opt
       } else {
         fitted[[mod]] <- NA
         names(fitted[mod]) <-paste(models[mod])
       }
     }
-    if (model=="OU" & !is(OU,"try-error")) {if(!is.na(OU$opt$alpha)){phy=rescale(phy,model="OU",OU$opt$alpha)}}
-    if (model =="EB" & !is(EB,"try-error")){if(!is.na(EB$opt$a)){phy=rescale(phy,model="EB",EB$opt$a)}}
-    if (model=="lambda" & !is(lambda,"try-error")) {if(!is.na(lambda$opt$lambda)){phy=rescale(phy,model="lambda",lambda$opt$lambda)}}
-    if(model=="kappa" & !is(kappa,"try-error")) {if(!is.na(kappa$opt$kappa)){phy=rescale(phy,model="kappa",kappa$opt$kappa)}}
-    if(model=="delta" & !is(delta,"try-error")) {if(!is.na(delta$opt$delta)){phy=rescale(phy,model="delta",delta$opt$delta)}}
+    if (model=="OU" & !methods::is(OU,"try-error")) {if(!methods::is.na(OU$opt$alpha)){phy=phytools::rescale(phy,model="OU",OU$opt$alpha)}}
+    if (model =="EB" & !methods::is(EB,"try-error")){if(!methods::is.na(EB$opt$a)){phy=phytools::rescale(phy,model="EB",EB$opt$a)}}
+    if (model=="lambda" & !methods::is(lambda,"try-error")) {if(!methods::is.na(lambda$opt$lambda)){phy=phytools::rescale(phy,model="lambda",lambda$opt$lambda)}}
+    if(model=="kappa" & !methods::is(kappa,"try-error")) {if(!methods::is.na(kappa$opt$kappa)){phy=phytools::rescale(phy,model="kappa",kappa$opt$kappa)}}
+    if(model=="delta" & !methods::is(delta,"try-error")) {if(!methods::is.na(delta$opt$delta)){phy=phytools::rescale(phy,model="delta",delta$opt$delta)}}
     was.estimated <- TRUE
   }
   if(!was.estimated){
-    if (model=="BM") {fitted<-BM<-try(fitContinuous(phy,x,model="BM",bounds=bounds,control=control),silent=T)}
-    if (model=="OU") {fitted<-OU<-try(fitContinuous(phy,x,model="OU",bounds=bounds,control=control),silent=T)
-    if(!is(OU,"try-error")){ if(!is.na(OU$opt$alpha)){phy=rescale(phy,model="OU",OU$opt$alpha)}}}
-    if (model =="EB"){fitted<-EB<-try(fitContinuous(phy,x,model="EB",bounds=bounds,control=control),silent=T)
-    if(!is(EB,"try-error")){ if(!is.na(EB$opt$a)){ phy=rescale(phy,model="EB",EB$opt$a)}}}
-    if (model=="lambda") {fitted<-lambda<-try(fitContinuous(phy,x,model="lambda",bounds=bounds,control=control),silent=T)
-    if(!is(lambda,"try-error")){if(!is.na(lambda$opt$lambda)){phy=rescale(phy,model="lambda",lambda$opt$lambda)}}}
-    if(model=="kappa") {fitted<-kappa<-try(fitContinuous(phy,x,model="kappa",bounds=bounds,control=control),silent=T)
-    if(!is(kappa,"try-error")){ if(!is.na(kappa$opt$kappa)){ phy=rescale(phy,model="kappa",kappa$opt$kappa)}}}
-    if(model=="delta") {fitted<-delta<-try(fitContinuous(phy,x,model="delta",bounds=bounds,control=control),silent=T)
-    if(!is(delta,"try-error")){ if(!is.na(delta$opt$delta)){phy=rescale(phy,model="delta",delta$opt$delta)}}}
+    if (model=="BM") {fitted<-BM<-try(geiger::fitContinuous(phy,x,model="BM",bounds=bounds,control=control),silent=T)}
+    if (model=="OU") {fitted<-OU<-try(geiger::fitContinuous(phy,x,model="OU",bounds=bounds,control=control),silent=T)
+    if(!methods::is(OU,"try-error")){ if(!methods::is.na(OU$opt$alpha)){phy=phytools::rescale(phy,model="OU",OU$opt$alpha)}}}
+    if (model =="EB"){fitted<-EB<-try(geiger::fitContinuous(phy,x,model="EB",bounds=bounds,control=control),silent=T)
+    if(!methods::is(EB,"try-error")){ if(!methods::is.na(EB$opt$a)){ phy=phytools::rescale(phy,model="EB",EB$opt$a)}}}
+    if (model=="lambda") {fitted<-lambda<-try(geiger::fitContinuous(phy,x,model="lambda",bounds=bounds,control=control),silent=T)
+    if(!methods::is(lambda,"try-error")){if(!methods::is.na(lambda$opt$lambda)){phy=phytools::rescale(phy,model="lambda",lambda$opt$lambda)}}}
+    if(model=="kappa") {fitted<-kappa<-try(geiger::fitContinuous(phy,x,model="kappa",bounds=bounds,control=control),silent=T)
+    if(!methods::is(kappa,"try-error")){ if(!methods::is.na(kappa$opt$kappa)){ phy=phytools::rescale(phy,model="kappa",kappa$opt$kappa)}}}
+    if(model=="delta") {fitted<-delta<-try(geiger::fitContinuous(phy,x,model="delta",bounds=bounds,control=control),silent=T)
+    if(!methods::is(delta,"try-error")){ if(!methods::is.na(delta$opt$delta)){phy=phytools::rescale(phy,model="delta",delta$opt$delta)}}}
   }
   #make sure phylo is phylo
   if(class(phy)=="phylo"){
-    M <- dist.nodes(phy)
+    M <- ape::dist.nodes(phy)
   }else{
-    phy <- as.phylo(phy$phy)
-    M <- dist.nodes(phy) #uses GLS on [rescaled] phylo
+    phy <- ape::as.phylo(phy$phy)
+    M <- ape::dist.nodes(phy) #uses GLS on [rescaled] phylo
   }
   #Martins & Hansen (1997)
   nb.tip <- length(phy$tip.label)
   varAY <- M[-(1:nb.tip), 1:nb.tip]
   varY <- M[1:nb.tip,1:nb.tip]
   J<-array(1,dim=nb.tip)
-  if(try(is.matrix(solve(varY)),silent=T)==TRUE){
+  if(try(methods::is.matrix(solve(varY)),silent=T)==TRUE){
     GrandMean<-J%*%solve(varY)%*%x / J%*%solve(varY)%*%J
     node.est<- varAY%*%solve(varY)%*%(x-c(GrandMean)) + GrandMean[1,1]
   } else {
     warning("In node.est(): singular matrix: using dist matrix without the rescale, revert to BM")
-    M <- dist.nodes(treedata.obj$phy)
+    M <- ape::dist.nodes(treedata.obj$phy)
     varAY <- M[-(1:nb.tip), 1:nb.tip]
     varY <- M[1:nb.tip,1:nb.tip]
     GrandMean<-J%*%solve(varY)%*%x / J%*%solve(varY)%*%J
     node.est<- varAY%*%solve(varY)%*%(x-c(GrandMean)) + GrandMean[1,1]
     phy <- treedata.obj$phy
   }
-  if(plot.est && !is.na(node.est)) {
-    plot(dist.nodes(treedata.obj$phy)[,treedata.obj$phy$edge[1,1]],c(treedata.obj$data[,traitnum],node.est),xlab="Time",ylab="Trait",type="n")
+  if(plot.est && !methods::is.na(node.est)) {
+    plot(ape::dist.nodes(treedata.obj$phy)[,treedata.obj$phy$edge[1,1]],c(treedata.obj$data[,traitnum],node.est),xlab="Time",ylab="Trait",type="n")
     for(i in 1:length(treedata.obj$phy$edge[,1])){
-      lines(dist.nodes(treedata.obj$phy)[,treedata.obj$phy$edge[1,1]][treedata.obj$phy$edge[i,]],c(treedata.obj$data[,traitnum],node.est)[treedata.obj$phy$edge[i,]])
+      graphics::lines(ape::dist.nodes(treedata.obj$phy)[,treedata.obj$phy$edge[1,1]][treedata.obj$phy$edge[i,]],c(treedata.obj$data[,traitnum],node.est)[treedata.obj$phy$edge[i,]])
     }
   }
   if(was.estimated){ return (list(model=model,est=node.est,phy=phy,fitted=fitted))} else {return (list(model=model,est=node.est,phy=phy,fitted=fitted$opt))}

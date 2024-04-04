@@ -13,32 +13,25 @@
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.
 #' @param which.plot "all" plots trait maps and MESS, "mess" plots MESS map, "none" does not plot
 #' @details plots MESS maps of climate envelope model for specific time slices. Can either plot individual biovariables, or combined.
+#' @importFrom utils data
+#' @importFrom grDevices colorRamp
+#' @importFrom geiger treedata
+#' @importFrom sp SpatialPoints
+#' @importFrom sp CRS
+#' @importFrom sp proj4string
+#' @importFrom sp spTransform
+#' @importFrom grDevices pdf
+#' @importFrom graphics points
+#' @importFrom grDevices dev.off
 #' @export
 #' @seealso \code{ppgm()}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon
 #' @examples
 
-#cem_min = cbind(trialest$cem[,1],trialest1$cem[, 1])
-#cem_max = cbind(trialest$cem[,7],trialest1$cem[, 3])
-#rownames(cem_min) <- rownames(cem_max) <- rownames(trialest$cem)
-#extract one variable from the results of multivar run. min and max, 52 species, 3rd run, 100 trees
-#relist1 <- lapply(lapply(1:length(tree),function(x) array(unlist(trialest$node_est),dim=c(2,52,3,100))[,,1,x]),list)
-#relist2 <- lapply(lapply(1:length(tree),function(x) array(unlist(trialest1$node_est),dim=c(2,52,1,100))[,,1,x]),list)
-#est = list(relist1,relist2)
-#mess <- ppgmMESS(cem_min, cem_max, est, tree = ex_mytree, timeslice = c(2,5,13,20), which.biovars = c(1,6))
-
-#mess <- ppgmMESS(test_fossil_con$cem[[1]], test_fossil_con$cem[[3]],test_fossil_con$node_est,tree=ex_mytree,which.biovars=c(1), timeslice = c(5,10))
-
 ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none")){
-
-  require(ape)
-  require(geiger)
-  require(sp)
-
-
   #load paleoclimate data
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    utils::data(paleoclimate) #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -46,14 +39,11 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
       paleoclimate <- paleoclimateUser
     }
   }
-
-  colorscheme <- colorRampPalette(c("blue","cyan","greenyellow","yellow","darkorange","red"))(250)
-
-  MESS_score<-as.list(array(NA,dim=length(timeslice)))
+  colorscheme <- grDevices::colorRampPalette(c("blue","cyan","greenyellow","yellow","darkorange","red"))(250)
+  MESS_score <- as.list(array(NA,dim=length(timeslice)))
   for(p in 1:length(timeslice)){
     MESS_score[[p]] <- array(NA,dim=c(length(paleoclimate[[(timeslice[p] + 1)]][,1]),length(which.biovars)))
   }
-
   #getenvelope
   for(b in 1:length(which.biovars)){
     treedata_min <- as.list(array(NA,dim = length(tree)))
@@ -70,8 +60,8 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
         data_max <- cem_max
         names(data_min) <- names(data_max) <- names(cem_min)
       }
-      treedata_min[[tr]] <- treedata(tree[[tr]], data = data_min, sort = TRUE, warnings = F)
-      treedata_max[[tr]] <- treedata(tree[[tr]], data = data_max, sort = TRUE, warnings = F)
+      treedata_min[[tr]] <- geiger::treedata(tree[[tr]], data = data_min, sort = TRUE, warnings = F)
+      treedata_max[[tr]] <- geiger::treedata(tree[[tr]], data = data_max, sort = TRUE, warnings = F)
       yikes[[tr]] <- list(array(est[[b]][[tr]][[1]],dim=c(2,length(est[[b]][[tr]][[1]][1,]),1)))
       #trickery to get yikes in the correct format for getEnvelopes function. would be wise to rethink this.
     }
@@ -92,13 +82,13 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
     temp_max <- apply(adj_data, 1, max)
 
     for(p in 1:length(timeslice)){
-      spdata <- SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
-      proj4string(spdata)  <- CRS("+init=epsg:4326")
-      spdata <- spTransform(spdata, CRS("+init=epsg:26978"))
+      spdata <- sp::SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
+      sp::proj4string(spdata)  <- sp::CRS("+init=epsg:4326")
+      spdata <- sp::spTransform(spdata, CRS("+init=epsg:26978"))
       if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
-        spfossils <- SpatialPoints(fossils[, 2:3])
-        proj4string(spfossils)  <- CRS("+init=epsg:4326")
-        spfossils <- spTransform(spfossils, CRS("+init=epsg:26978"))
+        spfossils <- sp::SpatialPoints(fossils[, 2:3])
+        sp::proj4string(spfossils)  <- sp::CRS("+init=epsg:4326")
+        spfossils <- sp::spTransform(spfossils, sp::CRS("+init=epsg:26978"))
         spfossils@data[,1] <- fossils[, 1]
         spfossils <- spfossils[fossils[, 1] == (timeslice[p] + 1), ]
       }
@@ -126,13 +116,13 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
       MESS_score[[p]][MESS_score[[p]][,b] > 0] <- 0
       #check on the size of graph and size of text
       if(which.plot == "all"){
-        pdf(paste("MESS",timeslice[p],"Bio",which.biovars[b],".pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
+        grDevices::pdf(paste("MESS",timeslice[p],"Bio",which.biovars[b],".pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
         plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
-        points(spdata,cex=1,pch=16,col=colorscheme[round(MESS_score[[p]][,b] - min(MESS_score[[p]][,b]) + 1)],xlim=c(-200,0),ylim=c(0,90))
+        graphics::points(spdata,cex=1,pch=16,col=colorscheme[round(MESS_score[[p]][,b] - min(MESS_score[[p]][,b]) + 1)],xlim=c(-200,0),ylim=c(0,90))
         if(sum(ex_fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
         }
-        dev.off()
+        grDevices::dev.off()
       }
     }
   }
@@ -140,24 +130,24 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
     if(which.plot == "all" | which.plot == "mess"){
       for(p in 1:length(timeslice)){
         #transform spatial data
-        spdata <- SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
-        proj4string(spdata)  <- CRS("+init=epsg:4326")
-        spdata <- spTransform(spdata, CRS("+init=epsg:26978"))
+        spdata <- sp::SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
+        sp::proj4string(spdata)  <- sp::CRS("+init=epsg:4326")
+        spdata <- sp::spTransform(spdata, sp::CRS("+init=epsg:26978"))
         if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
-          spfossils <- SpatialPoints(fossils[, 2:3])
-          proj4string(spfossils)  <- CRS("+init=epsg:4326")
-          spfossils <- spTransform(spfossils, CRS("+init=epsg:26978"))
+          spfossils <- sp::SpatialPoints(fossils[, 2:3])
+          sp::proj4string(spfossils)  <- sp::CRS("+init=epsg:4326")
+          spfossils <- sp::spTransform(spfossils, sp::CRS("+init=epsg:26978"))
           spfossils@data[,1] <- fossils[, 1]
           spfossils <- spfossils[fossils[, 1] == (timeslice[p] + 1), ]
         }
         #print plots
-        pdf(paste("MESS",timeslice[p],"Multi.pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
+        grDevices::pdf(paste("MESS",timeslice[p],"Multi.pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
         plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
-        points(spdata,cex=1,pch=16,col=colorscheme[round(apply(MESS_score[[p]], 1, min) - min(MESS_score[[p]]) + 1)],xlim=c(-200,0),ylim=c(0,90))
+        graphics::points(spdata,cex=1,pch=16,col=colorscheme[round(apply(MESS_score[[p]], 1, min) - min(MESS_score[[p]]) + 1)],xlim=c(-200,0),ylim=c(0,90))
         if(sum(ex_fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
         }
-        dev.off()
+        grDevices::dev.off()
       }
     }
   }

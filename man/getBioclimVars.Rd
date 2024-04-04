@@ -35,8 +35,7 @@ The time period 15 Ma uses the GCM by Krapp & Jungclaus (2011) for the Middle Mi
 For the one million year intervals outside the modern and past GCMs, the climate was interpolated based on the benthic marine foram stable oxygen isotope ratio curve from Ruddiman et al 1989. The scale of these variables is at a 50 km equidistant point grain size corresponding to Polly XX.
 }
 \examples{
-require(fields)
-data(occurrences)
+utils::data(occurrences)
 subsetoccur <- head(occurrences[,c(1:3)], n=100L)
 biooccur <- getBioclimVars(subsetoccur,which.biovars=c(3,5))
 #returns data frame with bioclimate variables 3 and 5 for occurrence data

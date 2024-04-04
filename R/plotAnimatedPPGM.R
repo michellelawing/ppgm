@@ -11,6 +11,10 @@
 #' @details Requires ImageMagick or GraphicsMagick to be installed on the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
 #' @return An animated gif of species through time
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon
+#' @importFrom utils data
+#' @importFrom animation saveGIF
+#' @importFrom graphics points
+#' @importFrom grDevices colorRampPalette
 #' @export
 #' @examples
 #here
@@ -18,7 +22,6 @@
 
 
 plotAnimatedPPGM<-function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
-  require(animation)
   #load paleoclimate data: isotopically scaled paleoclimate bioclimate variables for North America
   if(use.paleoclimate) {
     data(paleoclimate) #uses paleoclimate data from package
@@ -49,8 +52,8 @@ plotAnimatedPPGM<-function(envelope, tree, filename="ppgm.gif", which.biovars, p
     hld[which(hld==0,arr.ind=TRUE)]=NA
     return(hld)
   })
-  saveGIF(for(i in 1:length(paleoclimate)){
+  animation::saveGIF(for(i in 1:length(paleoclimate)){
     plot(paleoclimate[[i]][,2:3],cex=0.5,pch=16,col="lightgray",xlim=c(-180,0),ylim=c(0,90))
-    points(paleoclimate[[i]][,2:3],cex=0.5,pch=16,col=colorRampPalette(c("#FFE5CC", "#FF8000", "#990000"))(length(temp_min[[1]][1,]))[richnesscount[[i]]],xlim=c(-180,0),ylim=c(0,90))
+    graphics::points(paleoclimate[[i]][,2:3],cex=0.5,pch=16,col=grDevices::colorRampPalette(c("#FFE5CC", "#FF8000", "#990000"))(length(temp_min[[1]][1,]))[richnesscount[[i]]],xlim=c(-180,0),ylim=c(0,90))
   },movie.name=filename,outdir=getwd())
 }

@@ -4,7 +4,7 @@
 \alias{ppgmConsensus}
 \title{ppgmConsensus}
 \usage{
-ppgmConsensus(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut=1, only.biovars=TRUE, which.biovars = c(1:19), path = "", plotTraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+ppgmConsensus(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 }
 \arguments{
 \item{occurrences}{a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.}
@@ -69,12 +69,12 @@ ppgm makes a paleophylogeographic species distribution model using the bioclimat
 If the 19 bioclimate variables are not supplied with the occurrences or with the fossils, they will be extracted from the closest 50km point location in the modern or paleoclimate maps that are loaded in with this function. The paleoclimate maps are isotopically scaled between general circulation models (see Lawing and Polly 2011; Rodder et al. 2013) and modern climate (see Hijmans et al. 2005). The fossils paleoclimate data is extracted to the closest million year paleoclimate map. Paleoclimate maps are derived at one million year intervals for the past 20 Ma. The tree (phylogeny) should be dichotomous and the species names should match the names in the first column of the occurrences argument.
 }
 \examples{
-data(beastLeache)
-data(occurrences)
-data(new_fossils)
+utils::data(beastLeache)
+utils::data(occurrences)
+utils::data(new_fossils)
 bounds <- list(sigsq = c(min = 0, max = 1000000))
 ex_mytree <- beastLeache[[3]] #single tree
-test_fossil_con <- ppgmConsensus(occurrences = occurrences, fossils = new_fossils,trees = ex_mytree, fossils.edges = F, model = "BM", permut = 5, which.biovars = c(1), path = "plots/", plot.TraitGram = TRUE, plot.AnimatedMaps = TRUE,plot.GeoRates = TRUE, bounds = bounds, control = list(niter = 20))
+test_fossil_con <- ppgmConsensus(occurrences = occurrences, fossils = new_fossils,trees = ex_mytree, fossils.edges = F, model = "BM", permut = 5, which.biovars = c(1), bounds = bounds, control = list(niter = 20))
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon

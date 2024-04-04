@@ -58,8 +58,8 @@ biofossils <- getBioclimVars(new_fossils,1)
 rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-ex_min <- treedata(beastLeache[[1]], sp_data_min)
-ex_max <- treedata(beastLeache[[1]], sp_data_max)
+ex_min <- geiger::treedata(beastLeache[[1]], sp_data_min)
+ex_max <- geiger::treedata(beastLeache[[1]], sp_data_max)
 colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
 example_nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max,model="BM", fossils=biofossils, bounds=list(sigsq = c(min = 0, max = 1000000)))
 }

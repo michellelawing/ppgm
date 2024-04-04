@@ -31,10 +31,14 @@
 #' @return model_max list of trees with maximum fitted model as specified in \code{model}
 #' @return node_est list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
+#' @importFrom utils data
+#' @importFrom ape is.binary
+#' @importFrom ape multi2di
+#' @importFrom geiger treedata
 #' @export
 #' @examples
-#' data(beastLeache)
-#' data(occurrences)
+#' utils::data(beastLeache)
+#' utils::data(occurrences)
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
 #' ex_mytree <- sample(beastLeache,size=10) #small number of trees used for example only to save processing time, we recommend at least 100 trees
 #' test_ppgm <- ppgm(occurrences = occurrences,trees = ex_mytree, model = "BM", which.biovars = c(1), bounds = bounds, control = list(niter = 20), plot.TraitGram=T)
@@ -43,8 +47,6 @@
 ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                 which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,
                 bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
-  require(ape)
-  require(geiger)
   if(class(trees)=="phylo"){
     stop("ERROR: only one tree supplied. Please use ppgmConsensus")
   }
@@ -65,7 +67,7 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   }
   #load paleoclimate data
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    utils::data(paleoclimate) #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -93,10 +95,10 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
 #  }
   for(tr in 1:length(trees)){
     #Check if phylogeny is dichotomous, if not, make it dichotomous
-    if(length(trees)==1){if(!is.binary(trees[[tr]])){trees[[tr]]<-multi2di(trees[[tr]])}}
+    if(length(trees)==1){if(!ape::is.binary(trees[[tr]])){trees[[tr]]<-ape::multi2di(trees[[tr]])}}
     #make treedata object for bioclimate envelopes and phylogeny
-    treedata_min[[tr]]<-treedata(trees[[tr]],sp_data_min,sort=TRUE,warnings=F)  #matches species in tree with species in data
-    treedata_max[[tr]]<-treedata(trees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+    treedata_min[[tr]]<-geiger::treedata(trees[[tr]],sp_data_min,sort=TRUE,warnings=F)  #matches species in tree with species in data
+    treedata_max[[tr]]<-geiger::treedata(trees[[tr]],sp_data_max,sort=TRUE,warnings=F)
     colnames(treedata_min[[tr]]$data)<-colnames(treedata_max[[tr]]$data)<-paste("bio",which.biovars,sep="")  #labels biovars
     #to estimate nodes, place fossils randomly or as specified on edges from fossils.edges argument
     full_est <- list()
@@ -117,7 +119,7 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   time_int<-temp$time_int
   #plot permutations
   if(plot.TraitGram){
-    plotTraitGramMultiPhylo(treedata_min,treedata_max,node_est,fossils=fossils,which.biovars=which.biovars,path=path,alpha.trans=alpha.trans)
+    plotTraitGramMultiPhylo(treedata_min,treedata_max,node_est,fossils=fossils,which.biovars=which.biovars,path=path)
   }
   #plot animated maps
   if(plot.AnimatedMaps){

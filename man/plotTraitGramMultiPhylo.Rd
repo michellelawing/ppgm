@@ -26,6 +26,9 @@ plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use
 \description{
 Combine the node estimates based on random or specified fossil placement and plot them on a phylotrait gram in a specified directory.
 }
+\details{
+plots a trait gram over multiple phylogenetic trees
+}
 \seealso{
 plotTraitGram
 }

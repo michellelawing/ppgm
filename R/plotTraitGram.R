@@ -11,17 +11,22 @@
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
 #' @return a trait gram for minimum and maximum of biovariables
 #' @seealso plotTraitGramMultiPhylo
+#' @importFrom utils data
+#' @importFrom ape dist.nodes
+#' @importFrom grDevices pdf
+#' @importFrom graphics lines
+#' @importFrom graphics points
+#' @importFrom grDevices dev.off
 #' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
 
 
 plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
-  require(ape)
   num_traits <- length(treedata_min$data[1,])
   num_species <- length(treedata_min$data[,1])
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    utils::data(paleoclimate) #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -30,7 +35,7 @@ plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, w
     }
   }
   for(i in 1:num_traits){
-    M <- dist.nodes(treedata_min$phy)[1,num_species+1]-dist.nodes(treedata_min$phy)[,num_species+1]
+    M <- ape::dist.nodes(treedata_min$phy)[1,num_species+1]-ape::dist.nodes(treedata_min$phy)[,num_species+1]
     temp <- array(unlist(node_est),dim=c(2,length(node_est[[1]][1,,1]),num_traits,length(node_est)))
     traitgram_min_min <- cbind(c(treedata_min$data[,i],sapply(1:(num_species-1),function(x) min(temp[1,x,i,]))),M)
     traitgram_min_max <- cbind(c(treedata_min$data[,i],sapply(1:(num_species-1),function(x) max(temp[1,x,i,]))),M)
@@ -39,15 +44,15 @@ plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, w
     traitgram_min <- cbind(c(treedata_min$data[,i],colMeans(t(temp[1,1:(num_species-1),i,]))),M)
     traitgram_max <- cbind(c(treedata_max$data[,i],colMeans(t(temp[2,1:(num_species-1),i,]))),M)
     #check on the size of graph and size of text
-    pdf(paste(path,"bio",i,".pdf",sep=""),width=7,height=7,pointsize=10,useDingbats=F)
+    grDevices::pdf(paste(path,"bio",i,".pdf",sep=""),width=7,height=7,pointsize=10,useDingbats=F)
     plot(traitgram_min,ylim=rev(range(c(traitgram_min_min[,2]))),xlim=range(c(paleoclimate[[1]][,which.biovars[i]+3],
                                                                               paleoclimate[[11]][,which.biovars[i]+3], paleoclimate[[16]][,which.biovars[i]+3], traitgram_min_min,traitgram_max_max))
          ,type="n",xlab=colnames(treedata_min$data)[i],ylab="Time (mya)")
-    lines(c(min(paleoclimate[[1]][,which.biovars[i]+3],traitgram_min),max(paleoclimate[[1]][,which.biovars[i]+3],traitgram_max)),
+    graphics::lines(c(min(paleoclimate[[1]][,which.biovars[i]+3],traitgram_min),max(paleoclimate[[1]][,which.biovars[i]+3],traitgram_max)),
           c(0,0),col="antiquewhite",lwd=10)
-    lines(c(min(paleoclimate[[6]][,which.biovars[i]+3]),max(paleoclimate[[6]][,which.biovars[i]+3])),c(5,5),col="antiquewhite",lwd=10)
-    lines(c(min(paleoclimate[[11]][,which.biovars[i]+3]),max(paleoclimate[[11]][,which.biovars[i]+3])),c(10,10),col="antiquewhite",lwd=10)
-    lines(c(min(paleoclimate[[16]][,which.biovars[i]+3]),max(paleoclimate[[16]][,which.biovars[i]+3])),c(15,15),col="antiquewhite",lwd=10)
+    graphics::lines(c(min(paleoclimate[[6]][,which.biovars[i]+3]),max(paleoclimate[[6]][,which.biovars[i]+3])),c(5,5),col="antiquewhite",lwd=10)
+    graphics::lines(c(min(paleoclimate[[11]][,which.biovars[i]+3]),max(paleoclimate[[11]][,which.biovars[i]+3])),c(10,10),col="antiquewhite",lwd=10)
+    graphics::lines(c(min(paleoclimate[[16]][,which.biovars[i]+3]),max(paleoclimate[[16]][,which.biovars[i]+3])),c(15,15),col="antiquewhite",lwd=10)
     for(j in 1:104) {lines(c(traitgram_max_min[j,1],traitgram_max_max[j,1]),c(traitgram_max_min[j,2],traitgram_max_min[j,2]),col="skyblue1",lwd=6)}
     for(j in 1:104) {lines(c(traitgram_min_min[j,1],traitgram_min_max[j,1]),c(traitgram_min_min[j,2],traitgram_min_min[j,2]),col="grey",lwd=4)}
     for(j in 1:104) {lines(traitgram_max[treedata_max$phy$edge[j,],1],traitgram_max[treedata_max$phy$edge[j,],2],col="skyblue2")}

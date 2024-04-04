@@ -22,6 +22,9 @@
 #' @return \code{fitted}   if model = "estimate", returned values from the best fit model of evolution.
 #' @seealso \code{nodeEstimate}, \code{fitContinuous}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
+#' @importFrom ape which.edge
+#' @importFrom geiger treedata
+#' @importFrom ape drop.tip
 #' @export
 #' @examples
 #' data(beastLeache)
@@ -31,15 +34,13 @@
 #' rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 #' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-#' ex_min <- treedata(beastLeache[[1]], sp_data_min)
-#' ex_max <- treedata(beastLeache[[1]], sp_data_max)
+#' ex_min <- geiger::treedata(beastLeache[[1]], sp_data_min)
+#' ex_max <- geiger::treedata(beastLeache[[1]], sp_data_max)
 #' colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
 #' example_nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max,model="BM", fossils=biofossils, bounds=list(sigsq = c(min = 0, max = 1000000)))
 
 
 nodeEstimateFossils <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list()){
-  require(geiger)
-  require(phangorn)
   num_species<-length(treedata_min$data[,1])
   num_traits<-length(treedata_min$data[1,])
   node<-array(NA,dim=c(2,num_species-1,num_traits))
@@ -59,13 +60,13 @@ nodeEstimateFossils <- function(treedata_min, treedata_max, fossils=FALSE, fossi
         if(is.na(fossils.edges[i])){
           f.edge <- NA
         } else{
-          f.edge <- which.edge(treedata_min$phy,fossils.edges[i])
+          f.edge <- ape::which.edge(treedata_min$phy,fossils.edges[i])
         }
       }
-      treedata_min <- treedata(addFossil(treedata_min$phy, mintime = fossils[i,1], maxtime = fossils[i,1] + 1, name = rownames(fossils)[i],edge = f.edge), rbind(treedata_min$data,fossils[i,colnames(treedata_min$data),drop=F] - addRangeFossils),sort=TRUE,warnings=F)
+      treedata_min <- geiger::treedata(addFossil(treedata_min$phy, mintime = fossils[i,1], maxtime = fossils[i,1] + 1, name = rownames(fossils)[i],edge = f.edge), rbind(treedata_min$data,fossils[i,colnames(treedata_min$data),drop=F] - addRangeFossils),sort=TRUE,warnings=F)
       rownames(treedata_min$data)<-treedata_min$phy$tip.label
       colnames(treedata_min$data)<-c.names
-      treedata_max <- treedata(addFossil(treedata_max$phy, mintime = fossils[i,1], maxtime = fossils[i,1] + 1, name = rownames(fossils)[i],edge = f.edge), rbind(treedata_max$data,fossils[i,colnames(treedata_max$data),drop=F] + addRangeFossils),sort=TRUE,warnings=F)
+      treedata_max <- geiger::treedata(addFossil(treedata_max$phy, mintime = fossils[i,1], maxtime = fossils[i,1] + 1, name = rownames(fossils)[i],edge = f.edge), rbind(treedata_max$data,fossils[i,colnames(treedata_max$data),drop=F] + addRangeFossils),sort=TRUE,warnings=F)
       rownames(treedata_max$data)<-treedata_max$phy$tip.label
       colnames(treedata_max$data)<-c.names
     }
@@ -78,8 +79,8 @@ nodeEstimateFossils <- function(treedata_min, treedata_max, fossils=FALSE, fossi
     max_model[[trai]]<-nodeEstimate(treedata_max,trai,model=model,bounds=bounds,control=control,plot.est=FALSE)
     tmax<-max_model[[trai]]$est
     if(length(fossils)!=1){
-      node[1,,trai]<-tmin[as.numeric(rownames(tmin)) %in% drop.tip(treedata_min$phy,rownames(fossils))$node.label]
-      node[2,,trai]<-tmax[as.numeric(rownames(tmax)) %in% drop.tip(treedata_max$phy,rownames(fossils))$node.label]
+      node[1,,trai]<-tmin[as.numeric(rownames(tmin)) %in% ape::drop.tip(treedata_min$phy,rownames(fossils))$node.label]
+      node[2,,trai]<-tmax[as.numeric(rownames(tmax)) %in% ape::drop.tip(treedata_max$phy,rownames(fossils))$node.label]
     }
     if(length(fossils)==1){
       node[1,,trai]<-tmin
