@@ -27,7 +27,7 @@ Adds a fossil as a tip to a specified phylogeny given either an age range that t
 There are several random components to this function. First, if an edge is not specified to place a fossil, then an edge is randomly selected that is within the age range of the fossil. Second, the exact placement of the node leading to the fossil is randomly selected within the age range specified. Third, the length of the edge leading to the fossil is randomly selected with constraints on the maximum length of the edge, where the maximum length of the edge cannot render the fossil younger than the minimum time of occurrence as specified in the mintime argument.
 }
 \examples{
-mytree <- pbtree(n=20)
+mytree <- phytools::pbtree(n=20)
 newtree <- addFossil(mytree, mintime = max(mytree$edge.length)/2, maxtime= max(mytree$edge.length))
 plot(newtree)
 }

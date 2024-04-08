@@ -13,6 +13,8 @@ plotAnimatedPPGMMultiPhylo(envelope, tree, filename="ppgm.gif", which.biovars, p
 
 \item{filename}{filename of output}
 
+\item{which.biovars}{A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).}
+
 \item{path}{path to the directory where the results should be saved}
 
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
