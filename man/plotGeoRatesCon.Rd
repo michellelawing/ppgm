@@ -7,7 +7,7 @@
 plotGeoRatesCon(geo_center, geo_size, time_int, trees, path="")
 }
 \arguments{
-\item{geo_center}{change in geographic center of suitable climate envelope, see}
+\item{geo_center}{change in geographic center of suitable climate envelope}
 
 \item{geo_size}{change in geographic size of suitable climate envelope}
 
@@ -27,18 +27,20 @@ plotGeoRatesCon
 Creates plot with gray background of all pairwise comparisons of change in geo center and area through time. Blue points on top show the sequential change in geo center and expansion/contraction for all lineages
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
-tree <- beastLeache[[25]]
+tree <- sampletrees[[25]]
+\dontrun{occurrences <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F)
-treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
+treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
 full_est <- nodeEstimateFossils(treedata_min,treedata_max)
 node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
 example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
-plotGeoRatesCon(example_getGeoRate$geo_center,example_getGeoRate$geo_size,example_getGeoRate$time_int, trees = trees[[1]])
+plotGeoRatesCon(example_getGeoRate$geo_center,example_getGeoRate$geo_size,
+example_getGeoRate$time_int, trees = trees[[1]])}
 }
 \seealso{
 \code{getGeoRates}

@@ -4,7 +4,8 @@
 \alias{getGeoRate}
 \title{getGeoRate}
 \usage{
-getGeoRate(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL)
+getGeoRate(envelope, tree, which.biovars, use.paleoclimate=TRUE, 
+paleoclimateUser=NULL)
 }
 \arguments{
 \item{envelope}{the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}}
@@ -31,18 +32,19 @@ This function calculates the change in suitable habitat through time in geograph
 Calculates rate of geographic change of all lineages. Outputs both the geographic center change, and the geographic size change.
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
 data(paleoclimate)
-tree <- beastLeache[[25]]
-sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F)
-treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-full_est <- nodeEstimateFossils(treedata_min,treedata_max)
+tree <- sampletrees[[25]]
+occu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(occu[,4],occu$Species,min)
+sp_data_max<- tapply(occu[,4],occu$Species,max)
+treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
+treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+\dontrun{full_est <- nodeEstimateFossils(treedata_min,treedata_max)
 node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
+example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)}
 }
 \seealso{
 getEnvelopes()

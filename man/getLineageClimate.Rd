@@ -4,7 +4,8 @@
 \alias{getLineageClimate}
 \title{getLineageClimate}
 \usage{
-getLineageClimate(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL)
+getLineageClimate(envelope, tree, which.biovars, 
+use.paleoclimate=TRUE, paleoclimateUser=NULL)
 }
 \arguments{
 \item{envelope}{the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}}
@@ -29,18 +30,25 @@ This function calculates the suitable climate for each specific lineage, startin
 Calculates rate of geographic change of all lineages. Outputs both the geographic center change, and the geographic size change.
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
 data(paleoclimate)
-tree <- beastLeache[[25]]
-sp_data_min<- tapply(occurrences[,4],occurrences$Species,min) #species minimum for biovariable 1
-sp_data_max<- tapply(occurrences[,4],occurrences$Species,max) #species maximum for biovariable 1
-treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F) #convert to treedata object
-treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-full_est <- nodeEstimateFossils(treedata_min,treedata_max) #estimate node values using Brownian Motion
+occu <- getBioclimVars(occurrences, which.biovars=1)
+tree <- sampletrees[[25]]
+#species minimum for biovariable 1
+sp_data_min<- tapply(occu[,4],occu$Species,min)
+#species maximum for biovariable 1
+sp_data_max<- tapply(occu[,4],occu$Species,max)
+#convert to treedata object
+treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F) 
+treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+#estimate node values using Brownian Motion
+\dontrun{full_est <- nodeEstimateFossils(treedata_min,treedata_max)
 node_est <- full_est$est #extract only node estimates
-example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est) #calculate climate envelopes
-example_getLinClim <- getLineageClimate(example_getEnvelopes, tree, which.biovars=1) #calculate lineage specific climate
+#calculate climate envelopes
+example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
+#calculate lineage specific climate
+example_getLinClim <- getLineageClimate(example_getEnvelopes, tree, which.biovars=1)}
 }
 \seealso{
 getEnvelopes() getGeoRate()

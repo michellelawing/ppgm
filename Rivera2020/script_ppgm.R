@@ -164,7 +164,7 @@ print(parameters)
 #plot ppgmMESS
 par(mar = c(2, 1, 1, 1))
 
-#get enveoples 1,4,15 then 6 ... put appropriate order
+#get envelopes 1,4,15 then 6 ... put appropriate order
 cem_min <- cbind(trialest$cem[, 1], trialest$cem[, 2], trialest1$cem[, 1],trialest$cem[, 3])
 cem_max <- cbind(trialest$cem[, 7], trialest$cem[, 8], trialest1$cem[, 3],trialest$cem[, 9])
 rownames(cem_min) <- rownames(cem_max) <- rownames(trialest$cem)

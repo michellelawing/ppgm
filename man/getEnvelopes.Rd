@@ -7,7 +7,7 @@
 getEnvelopes(treedata_min, treedata_max, node_est)
 }
 \arguments{
-\item{treedata_min}{tree data object with min estimate of the climate envelope for each species}
+\item{treedata_min}{tree data object with min estimate of the climate envelope for each species.}
 
 \item{treedata_max}{tree data object with max estimate of the climate envelope for each species}
 
@@ -23,19 +23,20 @@ This function gets the bioclimate envelopes of species and nodes.
 Function derives the minimum, and maximum of each climate variable
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
-tree <- beastLeache[[25]]
-sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F)
-treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-full_est <- nodeEstimateFossils(treedata_min,treedata_max)
+tree <- sampletrees[[25]]
+biooccu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
+treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+\dontrun{full_est <- nodeEstimateFossils(treedata_min,treedata_max)
 node_est <- full_est$est
-example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
+example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)}
 }
 \seealso{
-\code{ppgmMESS()}, \code{nodeEstimate}
+\code{ppgmMESS()}, \code{nodeEstimate}, \code{geiger::treedata}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard

@@ -4,7 +4,12 @@
 \alias{ppgmConsensus}
 \title{ppgmConsensus}
 \usage{
-ppgmConsensus(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+ppgmConsensus(occurrences, fossils = FALSE, trees, 
+fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, 
+which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, 
+plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE, bounds = list(), 
+control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, 
+verbose = TRUE)
 }
 \arguments{
 \item{occurrences}{a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.}
@@ -44,23 +49,23 @@ ppgmConsensus(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model 
 \value{
 \code{cem} Estimate of climate envelope for each species in present time. A data frame containing species and min mean and max of biovars specified with \code{which.biovars}.
 
-geo_move data frame of RateGeoCenter and RateGeoSize
+\code{geo_move} data frame of RateGeoCenter and RateGeoSize
 
-change_geo_center array of change in geographic center of suitable climate for each lineage
+\code{change_geo_center} array of change in geographic center of suitable climate for each lineage
 
-change_geo_size array of change in geographic size of suitable climate for each lineage
+\code{change_geo_size} array of change in geographic size of suitable climate for each lineage
 
-time_int matrix array of time intervals
+\code{time_int} matrix array of time intervals
 
-treedata_min list of trees with minimum bioclimatic variables
+\code{treedata_min} list of trees with minimum bioclimatic variables
 
-treedata_max list of trees with maximum bioclimatic variables
+\code{treedata_max} list of trees with maximum bioclimatic variables
 
-model_min list of trees with minimum fitted model as specified in \code{model}
+\code{model_min} list of trees with minimum fitted model as specified in \code{model}
 
-model_max list of trees with maximum fitted model as specified in \code{model}
+\code{model_max} list of trees with maximum fitted model as specified in \code{model}
 
-node_est list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
+\code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
 }
 \description{
 ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. consensus version
@@ -69,12 +74,15 @@ ppgm makes a paleophylogeographic species distribution model using the bioclimat
 If the 19 bioclimate variables are not supplied with the occurrences or with the fossils, they will be extracted from the closest 50km point location in the modern or paleoclimate maps that are loaded in with this function. The paleoclimate maps are isotopically scaled between general circulation models (see Lawing and Polly 2011; Rodder et al. 2013) and modern climate (see Hijmans et al. 2005). The fossils paleoclimate data is extracted to the closest million year paleoclimate map. Paleoclimate maps are derived at one million year intervals for the past 20 Ma. The tree (phylogeny) should be dichotomous and the species names should match the names in the first column of the occurrences argument.
 }
 \examples{
-utils::data(beastLeache)
-utils::data(occurrences)
-utils::data(new_fossils)
+data(sampletrees)
+data(occurrences)
+data(scel_fossils)
+#set bounds for analysis
 bounds <- list(sigsq = c(min = 0, max = 1000000))
-ex_mytree <- beastLeache[[3]] #single tree
-test_fossil_con <- ppgmConsensus(occurrences = occurrences, fossils = new_fossils,trees = ex_mytree, fossils.edges = F, model = "BM", permut = 5, which.biovars = c(1), bounds = bounds, control = list(niter = 20))
+ex_mytree <- sampletrees[[3]] #single tree
+\dontrun{test_fossil_con <- ppgmConsensus(occurrences = occurrences, 
+fossils = scel_fossils, trees = ex_mytree, fossils.edges = FALSE, model = "BM", 
+permut = 5, which.biovars = 1, bounds = bounds, control = list(niter = 20))}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon

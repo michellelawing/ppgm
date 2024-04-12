@@ -4,7 +4,8 @@
 \alias{getBioclimVars}
 \title{getBioclimVars}
 \usage{
-getBioclimVars(occurrences, which.biovars=c(1,12), use.paleoclimate=TRUE, paleoclimateUser=NULL)
+getBioclimVars(occurrences, which.biovars=c(1:19), 
+use.paleoclimate=TRUE, paleoclimateUser=NULL)
 }
 \arguments{
 \item{occurrences}{a matrix or data.frame with three columns and rows to represent individuals. The first column must be species name for extant occurrences or the age in closest Ma for fossil occurrences. Second and third column must be Longitude and Latitude.}
@@ -35,9 +36,8 @@ The time period 15 Ma uses the GCM by Krapp & Jungclaus (2011) for the Middle Mi
 For the one million year intervals outside the modern and past GCMs, the climate was interpolated based on the benthic marine foram stable oxygen isotope ratio curve from Ruddiman et al 1989. The scale of these variables is at a 50 km equidistant point grain size corresponding to Polly XX.
 }
 \examples{
-utils::data(occurrences)
-subsetoccur <- head(occurrences[,c(1:3)], n=100L)
-biooccur <- getBioclimVars(subsetoccur,which.biovars=c(3,5))
+data(occurrences)
+biooccur <- getBioclimVars(occurrences,which.biovars=c(3,5))
 #returns data frame with bioclimate variables 3 and 5 for occurrence data
 }
 \references{

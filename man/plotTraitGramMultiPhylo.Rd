@@ -4,14 +4,16 @@
 \alias{plotTraitGramMultiPhylo}
 \title{plotTraitGramMultiPhylo}
 \usage{
-plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="")
+plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, 
+fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, 
+which.biovars, path="")
 }
 \arguments{
 \item{treedata_min}{tree data object with min estimate of the climate envelope}
 
 \item{treedata_max}{tree data object with max estimate of the climate envelope}
 
-\item{node_est}{the estimate of all the nodes, both min and max}
+\item{node_est}{the estimate of all the nodes, both min and max. Must be in format [[trees]][[permut]][2,species,trait]}
 
 \item{fossils}{a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.}
 
@@ -28,6 +30,23 @@ Combine the node estimates based on random or specified fossil placement and plo
 }
 \details{
 plots a trait gram over multiple phylogenetic trees
+}
+\examples{
+data(sampletrees)
+data(occurrences)
+biooccu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+treedata_min <- treedata_max <- node_est <- envelope <- list()
+\dontrun{for (tr in 1:length(sampletrees)){
+  treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
+  treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+  full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+  node_est[[tr]]<-lapply(1, function(p) full_est$est)
+  envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
+}
+plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1)
+}
 }
 \seealso{
 plotTraitGram

@@ -29,12 +29,13 @@ This function extracts estimated ancestral reconstructions for continuous charac
 The estimated reconstruction relies on an interpolation between node or between tip and node estimates of the trait. This method assumes a constant rate of evolution along the lineage where the interpolation is taking place.
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
+occurrences <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-treedata_min <- geiger::treedata(beastLeache[[1]], sp_data_min)
-ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
-ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))
+treedata_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
+\dontrun{ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
+ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))}
 }
 \seealso{
 \code{fitContinuous()}, \code{nodeEstimate()}

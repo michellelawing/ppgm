@@ -4,7 +4,8 @@
 \alias{nodeEstimateFossils}
 \title{nodeEstimateFossils}
 \usage{
-nodeEstimateFossils(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list())
+nodeEstimateFossils(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, 
+model="BM", bounds=list(), control=list())
 }
 \arguments{
 \item{treedata_min}{tree data object with min estimate of the climate envelope – list where first object is phylogeny, and second object is array of species with climate data variables (species must match)}
@@ -51,17 +52,20 @@ This function estimates nodes with the placement of fossils on randomly assigned
 function adds fossils to trees according to \code{addFossil()}, then passes to \code{nodeEstimate()}.
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
-data(new_fossils)
-biofossils <- getBioclimVars(new_fossils,1)
-rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
-sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-ex_min <- geiger::treedata(beastLeache[[1]], sp_data_min)
-ex_max <- geiger::treedata(beastLeache[[1]], sp_data_max)
+data(scel_fossils)
+occu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(occu[,4],occu$Species,min)
+sp_data_max<- tapply(occu[,4],occu$Species,max)
+ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
+ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
 colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-example_nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max,model="BM", fossils=biofossils, bounds=list(sigsq = c(min = 0, max = 1000000)))
+\dontrun{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
+rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
+nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max, 
+model="BM",fossils=biofossils,
+bounds=list(sigsq = c(min = 0, max = 1000000)))}
 }
 \seealso{
 \code{nodeEstimate}, \code{fitContinuous}

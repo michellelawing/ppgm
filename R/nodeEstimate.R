@@ -1,6 +1,7 @@
 #' @title nodeEstimate
 #' @description This function estimates the ancestral character states for continuous characters given a model of evolution or using the best fit model of evolution from the fitContinuous function in the geiger package. The ancestral states are estimated using GLS described in Martins and Hansen (1997).
-#' @usage nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), control = list(), plot.est = FALSE)
+#' @usage nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), 
+#' control = list(), plot.est = FALSE)
 #' @param treedata.obj an object of the class "treedata".
 #' @param traitnum the column number of the trait within the treedata object to be reconstructed.
 #' @param model the model of evolution to use in the ancestral state reconstruction. Options are "estimate", "BM", "OU", "EB", "lambda", "kappa", "delta".
@@ -34,11 +35,12 @@
 #' @importFrom graphics lines
 #' @export
 #' @examples
-#' data(beastLeache)
+#' data(sampletrees)
 #' data(occurrences)
+#' occurrences <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-#' ex <- treedata(beastLeache[[1]], sp_data_min)
-#' nodeEstimate(ex, 1, model = 'OU') #runs OU model
+#' ex <- geiger::treedata(sampletrees[[1]], sp_data_min)
+#' \dontrun{nodeEstimate(ex, 1, model = 'OU')} #runs OU model
 
 
 nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), control=list(), plot.est=FALSE) {
@@ -72,28 +74,28 @@ nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), cont
         names(fitted[mod]) <-paste(models[mod])
       }
     }
-    if (model=="OU" & !methods::is(OU,"try-error")) {if(!methods::is.na(OU$opt$alpha)){phy=phytools::rescale(phy,model="OU",OU$opt$alpha)}}
-    if (model =="EB" & !methods::is(EB,"try-error")){if(!methods::is.na(EB$opt$a)){phy=phytools::rescale(phy,model="EB",EB$opt$a)}}
-    if (model=="lambda" & !methods::is(lambda,"try-error")) {if(!methods::is.na(lambda$opt$lambda)){phy=phytools::rescale(phy,model="lambda",lambda$opt$lambda)}}
-    if(model=="kappa" & !methods::is(kappa,"try-error")) {if(!methods::is.na(kappa$opt$kappa)){phy=phytools::rescale(phy,model="kappa",kappa$opt$kappa)}}
-    if(model=="delta" & !methods::is(delta,"try-error")) {if(!methods::is.na(delta$opt$delta)){phy=phytools::rescale(phy,model="delta",delta$opt$delta)}}
+    if (model=="OU" & !methods::is(OU,"try-error")) {if(!is.na(OU$opt$alpha)){phy=phytools::rescale(phy,model="OU",OU$opt$alpha)}}
+    if (model =="EB" & !methods::is(EB,"try-error")){if(!is.na(EB$opt$a)){phy=phytools::rescale(phy,model="EB",EB$opt$a)}}
+    if (model=="lambda" & !methods::is(lambda,"try-error")) {if(!is.na(lambda$opt$lambda)){phy=phytools::rescale(phy,model="lambda",lambda$opt$lambda)}}
+    if(model=="kappa" & !methods::is(kappa,"try-error")) {if(!is.na(kappa$opt$kappa)){phy=phytools::rescale(phy,model="kappa",kappa$opt$kappa)}}
+    if(model=="delta" & !methods::is(delta,"try-error")) {if(!is.na(delta$opt$delta)){phy=phytools::rescale(phy,model="delta",delta$opt$delta)}}
     was.estimated <- TRUE
   }
   if(!was.estimated){
     if (model=="BM") {fitted<-BM<-try(geiger::fitContinuous(phy,x,model="BM",bounds=bounds,control=control),silent=T)}
     if (model=="OU") {fitted<-OU<-try(geiger::fitContinuous(phy,x,model="OU",bounds=bounds,control=control),silent=T)
-    if(!methods::is(OU,"try-error")){ if(!methods::is.na(OU$opt$alpha)){phy=phytools::rescale(phy,model="OU",OU$opt$alpha)}}}
+    if(!methods::is(OU,"try-error")){ if(!is.na(OU$opt$alpha)){phy=phytools::rescale(phy,model="OU",OU$opt$alpha)}}}
     if (model =="EB"){fitted<-EB<-try(geiger::fitContinuous(phy,x,model="EB",bounds=bounds,control=control),silent=T)
-    if(!methods::is(EB,"try-error")){ if(!methods::is.na(EB$opt$a)){ phy=phytools::rescale(phy,model="EB",EB$opt$a)}}}
+    if(!methods::is(EB,"try-error")){ if(!is.na(EB$opt$a)){ phy=phytools::rescale(phy,model="EB",EB$opt$a)}}}
     if (model=="lambda") {fitted<-lambda<-try(geiger::fitContinuous(phy,x,model="lambda",bounds=bounds,control=control),silent=T)
-    if(!methods::is(lambda,"try-error")){if(!methods::is.na(lambda$opt$lambda)){phy=phytools::rescale(phy,model="lambda",lambda$opt$lambda)}}}
+    if(!methods::is(lambda,"try-error")){if(!is.na(lambda$opt$lambda)){phy=phytools::rescale(phy,model="lambda",lambda$opt$lambda)}}}
     if(model=="kappa") {fitted<-kappa<-try(geiger::fitContinuous(phy,x,model="kappa",bounds=bounds,control=control),silent=T)
-    if(!methods::is(kappa,"try-error")){ if(!methods::is.na(kappa$opt$kappa)){ phy=phytools::rescale(phy,model="kappa",kappa$opt$kappa)}}}
+    if(!methods::is(kappa,"try-error")){ if(!is.na(kappa$opt$kappa)){ phy=phytools::rescale(phy,model="kappa",kappa$opt$kappa)}}}
     if(model=="delta") {fitted<-delta<-try(geiger::fitContinuous(phy,x,model="delta",bounds=bounds,control=control),silent=T)
-    if(!methods::is(delta,"try-error")){ if(!methods::is.na(delta$opt$delta)){phy=phytools::rescale(phy,model="delta",delta$opt$delta)}}}
+    if(!methods::is(delta,"try-error")){ if(!is.na(delta$opt$delta)){phy=phytools::rescale(phy,model="delta",delta$opt$delta)}}}
   }
   #make sure phylo is phylo
-  if(class(phy)=="phylo"){
+  if(is(phy,"phylo")){
     M <- ape::dist.nodes(phy)
   }else{
     phy <- ape::as.phylo(phy$phy)
@@ -104,7 +106,7 @@ nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), cont
   varAY <- M[-(1:nb.tip), 1:nb.tip]
   varY <- M[1:nb.tip,1:nb.tip]
   J<-array(1,dim=nb.tip)
-  if(try(methods::is.matrix(solve(varY)),silent=T)==TRUE){
+  if(try(is.matrix(solve(varY)),silent=T)==TRUE){
     GrandMean<-J%*%solve(varY)%*%x / J%*%solve(varY)%*%J
     node.est<- varAY%*%solve(varY)%*%(x-c(GrandMean)) + GrandMean[1,1]
   } else {
@@ -116,7 +118,7 @@ nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), cont
     node.est<- varAY%*%solve(varY)%*%(x-c(GrandMean)) + GrandMean[1,1]
     phy <- treedata.obj$phy
   }
-  if(plot.est && !methods::is.na(node.est)) {
+  if(plot.est && !is.na(node.est)) {
     plot(ape::dist.nodes(treedata.obj$phy)[,treedata.obj$phy$edge[1,1]],c(treedata.obj$data[,traitnum],node.est),xlab="Time",ylab="Trait",type="n")
     for(i in 1:length(treedata.obj$phy$edge[,1])){
       graphics::lines(ape::dist.nodes(treedata.obj$phy)[,treedata.obj$phy$edge[1,1]][treedata.obj$phy$edge[i,]],c(treedata.obj$data[,traitnum],node.est)[treedata.obj$phy$edge[i,]])

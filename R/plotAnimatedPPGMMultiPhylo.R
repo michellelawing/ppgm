@@ -1,6 +1,7 @@
 #' @title plotAnimatedPPGMMultiPhylo
 #' @description This function creates an animated gif showing the change in modeled suitable habitat through time in geographic space. It requires ImageMagick or GraphicsMagick to be previously installed in the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
-#' @usage plotAnimatedPPGMMultiPhylo(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' @usage plotAnimatedPPGMMultiPhylo(envelope, tree, filename="ppgm.gif", 
+#' which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 #' @param envelope the min and max envelope of each lineage for each time slice
 #' @param tree the phylogeny or multiple phylogenies that show the relationship between species
 #' @param filename filename of output
@@ -14,9 +15,22 @@
 #' @importFrom animation saveGIF
 #' @importFrom graphics points
 #' @importFrom grDevices colorRampPalette
+#' @importFrom graphics text
 #' @examples
-#here
-#plotAnimatedPPGM(trialest$cem, beastLeache,which.biovars=c(1,4,15))
+#' data(sampletrees)
+#' data(occurrences)
+#' biooccu <- getBioclimVars(occurrences, which.biovars=1)
+#' sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+#' sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+#' treedata_min <- treedata_max <- node_est <- envelope <- list()
+#' \dontrun{for (tr in 1:length(sampletrees)){
+#'   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
+#'   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+#'   full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+#'   node_est[[tr]] <- full_est$est
+#'   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
+#' }
+#' animatedplot <- plotAnimatedPPGMMultiPhylo(envelope,sampletrees,which.biovars=1)}
 
 
 plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
@@ -24,7 +38,7 @@ plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", whic
   if(path!=""){out=paste(getwd(),"/",substr(path,1,nchar(path)-1),sep="")}
   #load paleoclimate data
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -73,9 +87,9 @@ plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", whic
     translate<-cbind(scale[,1]-35,scale[,2]+25)
     graphics::points(translate,cex=0.5,pch=16,col="lightgray")
     graphics::points(translate,cex=0.5,pch=16,col=colorRampPalette(c("#FFE5CC", "#FF8000", "#990000"))(length(temp_min[[tr]][[1]][1,]))[richnesscountMAX])
-    text(-160,40,"Min")
-    text(-35,40,"Max")
-    text(-90,85,"Mean")
-    text(-90,90,"Modeled Richness over a distribution of trees")
+    graphics::text(-160,40,"Min")
+    graphics::text(-35,40,"Max")
+    graphics::text(-90,85,"Mean")
+    graphics::text(-90,90,"Modeled Richness over a distribution of trees")
   },movie.name=filename,outdir=out)
 }

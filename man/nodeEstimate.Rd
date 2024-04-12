@@ -4,7 +4,8 @@
 \alias{nodeEstimate}
 \title{nodeEstimate}
 \usage{
-nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), control = list(), plot.est = FALSE)
+nodeEstimate(treedata.obj, traitnum, model = "BM", bounds = list(), 
+control = list(), plot.est = FALSE)
 }
 \arguments{
 \item{treedata.obj}{an object of the class "treedata".}
@@ -49,11 +50,12 @@ This function estimates the ancestral character states for continuous characters
 See the \code{fitContinuous()} details for descriptions of the models of evolution and parameter estimation. \code{nodeEstimate()} currently supports the following models of evolution: Brownian motion (Felsenstein, 1973), Ornstein-Uhlenbeck (Butler and King, 2004), early-burst (Harmon et al., 2010), lambda (Pagel, 1999), kappa (Pagel, 1999), and delta (Pagel, 1999).
 }
 \examples{
-data(beastLeache)
+data(sampletrees)
 data(occurrences)
+occurrences <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-ex <- treedata(beastLeache[[1]], sp_data_min)
-nodeEstimate(ex, 1, model = 'OU') #runs OU model
+ex <- geiger::treedata(sampletrees[[1]], sp_data_min)
+\dontrun{nodeEstimate(ex, 1, model = 'OU')} #runs OU model
 }
 \references{
 Butler, M. A. and King, A. A. (2004) Phylogenetic comparative analysis: a modeling approach for adaptive evolution. American Naturalist, 164:683-695.

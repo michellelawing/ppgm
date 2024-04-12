@@ -1,6 +1,8 @@
 #' @title ppgmMESS
 #' @description This creates a MESS map for given time slices, climate envelopes, and paleoclimate models.
-#' @usage ppgmMESS(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none"))
+#' @usage ppgmMESS(cem_min, cem_max, est, tree, fossils, timeslice, 
+#' which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, 
+#' which.plot = c("all","mess","none"))
 #' @param cem_min the cem min output from the ppgm function. cbind() if there are multiple variables.
 #' @param cem_max the cem max output from the ppgm function. cbind() if there are multiple variables.
 #' @param est the node_est output from the ppgm function, in list format. [tree][1][min and max][no.of species]
@@ -16,22 +18,39 @@
 #' @importFrom utils data
 #' @importFrom grDevices colorRamp
 #' @importFrom geiger treedata
-#' @importFrom sp SpatialPoints
-#' @importFrom sp CRS
-#' @importFrom sp proj4string
-#' @importFrom sp spTransform
 #' @importFrom grDevices pdf
 #' @importFrom graphics points
 #' @importFrom grDevices dev.off
+#' @import sp
 #' @export
 #' @seealso \code{ppgm()}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon
 #' @examples
+#' data(sampletrees)
+#' data(occurrences)
+#' data(scel_fossils)
+#' biooccu <- getBioclimVars(occurrences, which.biovars=1)
+#' sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+#' sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+#' treedata_min <- treedata_max <- node_est <- list()
+#' \dontrun{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
+#' rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
+#' for (tr in 1:length(sampletrees)){
+#'   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
+#'   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+#'   full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+#'   node_est[[tr]] <- full_est$est
+#' }
+#' relist1 <- lapply(lapply(1:length(sampletrees), function(x) array(unlist(node_est), 
+#' dim = c(2, 52, 3, 100))[,,1,x]), list)
+#' ppgmMESS(sp_data_min, sp_data_max, est=list(relist1) ,sampletrees, fossils=biofossils,
+#' timeslice=10, which.biovars=1, which.plot="all")
+#' }
 
 ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none")){
   #load paleoclimate data
   if(use.paleoclimate) {
-    utils::data(paleoclimate) #uses paleoclimate data from package
+    paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -119,7 +138,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
         grDevices::pdf(paste("MESS",timeslice[p],"Bio",which.biovars[b],".pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
         plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
         graphics::points(spdata,cex=1,pch=16,col=colorscheme[round(MESS_score[[p]][,b] - min(MESS_score[[p]][,b]) + 1)],xlim=c(-200,0),ylim=c(0,90))
-        if(sum(ex_fossils[,1]==(timeslice[p] + 1))!=0){
+        if(sum(fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
         }
         grDevices::dev.off()
@@ -144,7 +163,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils, timeslice, which.biov
         grDevices::pdf(paste("MESS",timeslice[p],"Multi.pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
         plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
         graphics::points(spdata,cex=1,pch=16,col=colorscheme[round(apply(MESS_score[[p]], 1, min) - min(MESS_score[[p]]) + 1)],xlim=c(-200,0),ylim=c(0,90))
-        if(sum(ex_fossils[,1]==(timeslice[p] + 1))!=0){
+        if(sum(fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
         }
         grDevices::dev.off()

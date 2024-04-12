@@ -1,6 +1,7 @@
 #' @title plotTraitGram
 #' @description Combine the node estimates based on random or specified fossil placement and plot them on a phylotraitgram in a specified directory.
-#' @usage plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' @usage plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, 
+#' which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 #' @param treedata_min a tree data object with the min estimate of the climate envelope
 #' @param treedata_max a tree data object with the max estimate of the climate envelope
 #' @param node_est the estimate of all the nodes, both min and max
@@ -20,7 +21,17 @@
 #' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
-
+#' data(sampletrees)
+#' data(occurrences)
+#' occurrences <- getBioclimVars(occurrences, which.biovars=1)
+#' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
+#' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
+#' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
+#' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
+#' colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
+#' \dontrun{nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max, 
+#' model="BM", bounds=list(sigsq = c(min = 0, max = 1000000)))
+#' plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1)}
 
 plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
   num_traits <- length(treedata_min$data[1,])

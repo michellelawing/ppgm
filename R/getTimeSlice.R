@@ -16,12 +16,13 @@
 #' @importFrom graphics points
 #' @export
 #' @examples
-#' data(beastLeache)
+#' data(sampletrees)
 #' data(occurrences)
+#' occurrences <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-#' treedata_min <- geiger::treedata(beastLeache[[1]], sp_data_min)
-#' ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
-#' ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))
+#' treedata_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
+#' \dontrun{ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
+#' ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))}
 
 
 getTimeSlice <- function(timeSlice, tree, trait, model = "BM", plot.est=FALSE){

@@ -1,6 +1,7 @@
 #' @title getBioclimVars
 #' @description This function retrieves the bioclimatic variables described in Nix & Busby (1986) for the specified variables and the specified time period.
-#' @usage getBioclimVars(occurrences, which.biovars=c(1,12), use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' @usage getBioclimVars(occurrences, which.biovars=c(1:19), 
+#' use.paleoclimate=TRUE, paleoclimateUser=NULL)
 #' @param occurrences a matrix or data.frame with three columns and rows to represent individuals. The first column must be species name for extant occurrences or the age in closest Ma for fossil occurrences. Second and third column must be Longitude and Latitude.
 #' @param which.biovars a vector of the numbers of the bioclimatic variables that should be returned. The bioclimatic variables number correspond to the table at (https://www.worldclim.org/data/bioclim.html).
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
@@ -20,18 +21,16 @@
 #' @references Nix, H. and Busby, J. (1986) BIOCLIM, a bioclimatic analysis and prediction system. CSIRO annual report. CSIRO Division of Water and Land Resources, Canberra.
 #' @references Ruddiman, W. F. et al. (1989) Pleistocene evolution: Northern hemisphere ice sheets and North Atlantic Ocean. Paleoceanography 4: 353-412
 #' @importFrom fields rdist.earth
-#' @importFrom utils data
 #' @export
 #' @examples
-#' utils::data(occurrences)
-#' subsetoccur <- head(occurrences[,c(1:3)], n=100L)
-#' biooccur <- getBioclimVars(subsetoccur,which.biovars=c(3,5))
+#' data(occurrences)
+#' biooccur <- getBioclimVars(occurrences,which.biovars=c(3,5))
 #' #returns data frame with bioclimate variables 3 and 5 for occurrence data
 
 
-getBioclimVars <- function(occurrences, which.biovars=c(1,12), use.paleoclimate=TRUE, paleoclimateUser=NULL){
+getBioclimVars <- function(occurrences, which.biovars=c(1:19), use.paleoclimate=TRUE, paleoclimateUser=NULL){
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -54,6 +53,7 @@ getBioclimVars <- function(occurrences, which.biovars=c(1,12), use.paleoclimate=
         min_dist[i]<-which.min(calc_dist[,i])
       }
       occurrences<-cbind(occurrences,paleoclimate[[1]][min_dist,which.biovars+3])
+      colnames(occurrences) <- c("Species", "Longitude", "Latitude", paste("bio",which.biovars,sep=""))
       return(occurrences)
     }
     if(is.numeric(occurrences[1,1])){

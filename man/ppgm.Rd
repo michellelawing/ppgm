@@ -4,7 +4,11 @@
 \alias{ppgm}
 \title{ppgm}
 \usage{
-ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, 
+model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), 
+path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, 
+bounds = list(), control = list(), use.paleoclimate = TRUE, 
+paleoclimateUser = NULL, verbose = TRUE)
 }
 \arguments{
 \item{occurrences}{a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.}
@@ -44,37 +48,37 @@ ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", p
 \value{
 \code{cem} Estimate of climate envelope for each species in present time. A data frame containing species and min mean and max of biovars specified with \code{which.biovars}.
 
-geo_move data frame of RateGeoCenter and RateGeoSize
+\code{geo_move} data frame of RateGeoCenter and RateGeoSize
 
-change_geo_center array of change in geographic center of suitable climate for each lineage
+\code{change_geo_center} array of change in geographic center of suitable climate for each lineage
 
-change_geo_size array of change in geographic size of suitable climate for each lineage
+\code{change_geo_size} array of change in geographic size of suitable climate for each lineage
 
-time_int matrix array of time intervals
+\code{time_int} matrix array of time intervals
 
-treedata_min list of trees with minimum bioclimatic variables
+\code{treedata_min} list of trees with minimum bioclimatic variables
 
-treedata_max list of trees with maximum bioclimatic variables
+\code{treedata_max} list of trees with maximum bioclimatic variables
 
-model_min list of trees with minimum fitted model as specified in \code{model}
+\code{model_min} list of trees with minimum fitted model as specified in \code{model}
 
-model_max list of trees with maximum fitted model as specified in \code{model}
+\code{model_max} list of trees with maximum fitted model as specified in \code{model}
 
-node_est list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
+\code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
 }
 \description{
 ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. Currently, models are only available for North America.
 }
 \details{
 If the 19 bioclimate variables are not supplied with the occurrences or with the fossils, they will be extracted from the closest 50km point location in the modern or paleoclimate maps that are loaded in with this function. The paleoclimate maps are isotopically scaled between general circulation models (see Lawing and Polly 2011; Rodder et al. 2013) and modern climate (see Hijmans et al. 2005). The fossils paleoclimate data is extracted to the closest million year paleoclimate map. Paleoclimate maps are derived at one million year intervals for the past 20 Ma. The tree (phylogeny) should be dichotomous and the species names should match the names in the first column of the occurrences argument.
-For Michelle: fix to work with the nice plots on multiple trees, and check and see if it works when no suitable habitat is identified. also, make option to print any animated lineage through time?
 }
 \examples{
-utils::data(beastLeache)
-utils::data(occurrences)
+data(sampletrees)
+data(occurrences)
 bounds <- list(sigsq = c(min = 0, max = 1000000))
-ex_mytree <- sample(beastLeache,size=10) #small number of trees used for example only to save processing time, we recommend at least 100 trees
-test_ppgm <- ppgm(occurrences = occurrences,trees = ex_mytree, model = "BM", which.biovars = c(1), bounds = bounds, control = list(niter = 20), plot.TraitGram=T)
+\dontrun{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
+model = "BM", which.biovars = c(1), bounds = bounds, 
+control = list(niter = 20))}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon

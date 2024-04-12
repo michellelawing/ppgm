@@ -4,7 +4,8 @@
 \alias{plotAnimatedPPGM}
 \title{plotAnimatedPPGM}
 \usage{
-plotAnimatedPPGM(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
+plotAnimatedPPGM(envelope, tree, filename="ppgm.gif", which.biovars, 
+path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 }
 \arguments{
 \item{envelope}{the min and max envelope of each lineage for each time slice}
@@ -29,6 +30,20 @@ This function creates an animated gif showing the change in modelled suitable ha
 }
 \details{
 Requires ImageMagick or GraphicsMagick to be installed on the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
+}
+\examples{
+data(sampletrees)
+data(occurrences)
+tree <- sampletrees[[25]]
+biooccu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
+treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+\dontrun{full_est <- nodeEstimateFossils(treedata_min,treedata_max)
+node_est <- full_est$est
+example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
+animatedplot <- plotAnimatedPPGM(example_getEnvelopes,tree,which.biovars=1)}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon

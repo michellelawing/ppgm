@@ -1,6 +1,10 @@
 #' @title ppgm
 #' @description ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. Currently, models are only available for North America.
-#' @usage ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+#' @usage ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, 
+#' model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), 
+#' path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, 
+#' bounds = list(), control = list(), use.paleoclimate = TRUE, 
+#' paleoclimateUser = NULL, verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
 #' @param trees phylogenies of species from first column of occurrences argument. Object of class multiphylo.
@@ -19,17 +23,16 @@
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.
 #' @param verbose default true, returns all outputs. If FALSE then returns only climate envelopes and geographic data
 #' @details If the 19 bioclimate variables are not supplied with the occurrences or with the fossils, they will be extracted from the closest 50km point location in the modern or paleoclimate maps that are loaded in with this function. The paleoclimate maps are isotopically scaled between general circulation models (see Lawing and Polly 2011; Rodder et al. 2013) and modern climate (see Hijmans et al. 2005). The fossils paleoclimate data is extracted to the closest million year paleoclimate map. Paleoclimate maps are derived at one million year intervals for the past 20 Ma. The tree (phylogeny) should be dichotomous and the species names should match the names in the first column of the occurrences argument.
-#' For Michelle: fix to work with the nice plots on multiple trees, and check and see if it works when no suitable habitat is identified. also, make option to print any animated lineage through time?
 #' @return \code{cem} Estimate of climate envelope for each species in present time. A data frame containing species and min mean and max of biovars specified with \code{which.biovars}.
-#' @return geo_move data frame of RateGeoCenter and RateGeoSize
-#' @return change_geo_center array of change in geographic center of suitable climate for each lineage
-#' @return change_geo_size array of change in geographic size of suitable climate for each lineage
-#' @return time_int matrix array of time intervals
-#' @return treedata_min list of trees with minimum bioclimatic variables
-#' @return treedata_max list of trees with maximum bioclimatic variables
-#' @return model_min list of trees with minimum fitted model as specified in \code{model}
-#' @return model_max list of trees with maximum fitted model as specified in \code{model}
-#' @return node_est list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
+#' @return \code{geo_move} data frame of RateGeoCenter and RateGeoSize
+#' @return \code{change_geo_center} array of change in geographic center of suitable climate for each lineage
+#' @return \code{change_geo_size} array of change in geographic size of suitable climate for each lineage
+#' @return \code{time_int} matrix array of time intervals
+#' @return \code{treedata_min} list of trees with minimum bioclimatic variables
+#' @return \code{treedata_max} list of trees with maximum bioclimatic variables
+#' @return \code{model_min} list of trees with minimum fitted model as specified in \code{model}
+#' @return \code{model_max} list of trees with maximum fitted model as specified in \code{model}
+#' @return \code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
 #' @importFrom utils data
 #' @importFrom ape is.binary
@@ -37,17 +40,18 @@
 #' @importFrom geiger treedata
 #' @export
 #' @examples
-#' utils::data(beastLeache)
-#' utils::data(occurrences)
+#' data(sampletrees)
+#' data(occurrences)
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
-#' ex_mytree <- sample(beastLeache,size=10) #small number of trees used for example only to save processing time, we recommend at least 100 trees
-#' test_ppgm <- ppgm(occurrences = occurrences,trees = ex_mytree, model = "BM", which.biovars = c(1), bounds = bounds, control = list(niter = 20), plot.TraitGram=T)
+#' \dontrun{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
+#' model = "BM", which.biovars = c(1), bounds = bounds, 
+#' control = list(niter = 20))}
 
 
 ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                 which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,
                 bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
-  if(class(trees)=="phylo"){
+  if(is(trees,"phylo")){
     stop("ERROR: only one tree supplied. Please use ppgmConsensus")
   }
   #calculate the alpha.trans, which is the transparency for all the trees plotted on top of each other
@@ -86,13 +90,10 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   model_max<-as.list(array(NA,dim=length(trees)))
   envelope<-as.list(array(NA,dim=length(trees)))
   #get bioclimate envelopes
-  sp_data_min<-sapply(4:(length(which.biovars)+3),function(x) tapply(occurrences[,x],occurrences$Species,min))  #min of biovariable per species
+  sp_data_min<-sapply(4:(length(which.biovars)+3),function(x) tapply(occurrences[,x],occurrences$Species,min)) #min of biovariable per species
   sp_data_mean<-sapply(4:(length(which.biovars)+3),function(x) tapply(occurrences[,x],occurrences$Species,mean))
   sp_data_max<-sapply(4:(length(which.biovars)+3),function(x) tapply(occurrences[,x],occurrences$Species,max))
   colnames(sp_data_mean)<-which.biovars
-#  if(plot.BumpChart){
-#    plotBumpChart(sp_data_mean,path)  #broken?? Error: breaks and labels have unequal lengths
-#  }
   for(tr in 1:length(trees)){
     #Check if phylogeny is dichotomous, if not, make it dichotomous
     if(length(trees)==1){if(!ape::is.binary(trees[[tr]])){trees[[tr]]<-ape::multi2di(trees[[tr]])}}
@@ -148,6 +149,7 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   names(cem)<-c(paste(colnames(sp_data_mean),"Min",sep=""),paste(colnames(sp_data_mean),"Mean",sep=""),paste(colnames(sp_data_mean),"Max",sep=""))
   geo_move<-data.frame(colMeans(lineage_geo_center,na.rm=T),colMeans(lineage_geo_size,na.rm=T))
   names(geo_move)<-c("RateGeoCenter","RateGeoSize")
+  #print model aicc if model estimated
   print_table_min <- NA
   print_table_max <- NA
   if(model=="estimate"){

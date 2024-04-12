@@ -1,9 +1,11 @@
 #' @title plotTraitGramMultiPhylo
 #' @description Combine the node estimates based on random or specified fossil placement and plot them on a phylotrait gram in a specified directory.
-#' @usage plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path="")
+#' @usage plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, 
+#' fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, 
+#' which.biovars, path="")
 #' @param treedata_min tree data object with min estimate of the climate envelope
 #' @param treedata_max tree data object with max estimate of the climate envelope
-#' @param node_est the estimate of all the nodes, both min and max
+#' @param node_est the estimate of all the nodes, both min and max. Must be in format [[trees]][[permut]][2,species,trait]
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
@@ -12,11 +14,26 @@
 #' @details plots a trait gram over multiple phylogenetic trees
 #' @importFrom utils data
 #' @importFrom ape dist.nodes
-
+#' @importFrom grDevices rgb
 #' @seealso plotTraitGram
 #' @export
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
+#' data(sampletrees)
+#' data(occurrences)
+#' biooccu <- getBioclimVars(occurrences, which.biovars=1)
+#' sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+#' sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+#' treedata_min <- treedata_max <- node_est <- envelope <- list()
+#' \dontrun{for (tr in 1:length(sampletrees)){
+#'   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
+#'   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+#'   full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+#'   node_est[[tr]]<-lapply(1, function(p) full_est$est)
+#'   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
+#' }
+#' plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1)
+#' }
 
 
 plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, which.biovars, path=""){
@@ -24,7 +41,7 @@ plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossil
   num_traits<-length(treedata_min[[1]]$data[1,])
   num_species<-length(treedata_min[[1]]$data[,1])
   if(use.paleoclimate) {
-    utils::data(paleoclimate) #uses paleoclimate data from package
+    paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate
@@ -58,10 +75,10 @@ plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossil
     graphics::lines(c(min(paleoclimate[[11]][,which.biovars[i]+3]),max(paleoclimate[[11]][,which.biovars[i]+3])),c(10,10),col="antiquewhite",lwd=10)
     graphics::lines(c(min(paleoclimate[[16]][,which.biovars[i]+3]),max(paleoclimate[[16]][,which.biovars[i]+3])),c(15,15),col="antiquewhite",lwd=10)
     for(j in 1:length(node_est)){
-      for(k in 1:104) {lines(c(traitgram_max_min[[j]][k,1],traitgram_max_max[[j]][k,1]),c(traitgram_max_min[[j]][k,2],traitgram_max_min[[j]][k,2]),col=rgb(135,206,235,alpha=alpha.trans,maxColorValue=255),lwd=6)}
-      for(k in 1:104) {lines(c(traitgram_min_min[[j]][k,1],traitgram_min_max[[j]][k,1]),c(traitgram_min_min[[j]][k,2],traitgram_min_min[[j]][k,2]),col=rgb(128,128,128,alpha=alpha.trans,maxColorValue=255),lwd=4)}
-      for(k in 1:104) {lines(traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],1],traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],2],col=rgb(135,206,235,alpha=alpha.trans,maxColorValue=255))}
-      for(k in 1:104) {lines(traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],1],traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],2],col=rgb(128,128,128,alpha=alpha.trans,maxColorValue=255))}
+      for(k in 1:104) {lines(c(traitgram_max_min[[j]][k,1],traitgram_max_max[[j]][k,1]),c(traitgram_max_min[[j]][k,2],traitgram_max_min[[j]][k,2]),col=grDevices::rgb(135,206,235,alpha=alpha.trans,maxColorValue=255),lwd=6)}
+      for(k in 1:104) {lines(c(traitgram_min_min[[j]][k,1],traitgram_min_max[[j]][k,1]),c(traitgram_min_min[[j]][k,2],traitgram_min_min[[j]][k,2]),col=grDevices::rgb(128,128,128,alpha=alpha.trans,maxColorValue=255),lwd=4)}
+      for(k in 1:104) {lines(traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],1],traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],2],col=grDevices::rgb(135,206,235,alpha=alpha.trans,maxColorValue=255))}
+      for(k in 1:104) {lines(traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],1],traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],2],col=grDevices::rgb(128,128,128,alpha=alpha.trans,maxColorValue=255))}
     }
     if(length(fossils)!=1){for(k in 1:length(fossils[,1])) {points(fossils[k,i+3],fossils[k,1],col="black",pch=16)}}
     dev.off()

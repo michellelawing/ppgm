@@ -4,7 +4,9 @@
 \alias{ppgmMESS}
 \title{ppgmMESS}
 \usage{
-ppgmMESS(cem_min, cem_max, est, tree, fossils, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none"))
+ppgmMESS(cem_min, cem_max, est, tree, fossils, timeslice, 
+which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, 
+which.plot = c("all","mess","none"))
 }
 \arguments{
 \item{cem_min}{the cem min output from the ppgm function. cbind() if there are multiple variables.}
@@ -34,6 +36,28 @@ This creates a MESS map for given time slices, climate envelopes, and paleoclima
 }
 \details{
 plots MESS maps of climate envelope model for specific time slices. Can either plot individual biovariables, or combined.
+}
+\examples{
+data(sampletrees)
+data(occurrences)
+data(scel_fossils)
+biooccu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+treedata_min <- treedata_max <- node_est <- list()
+\dontrun{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
+rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
+for (tr in 1:length(sampletrees)){
+  treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
+  treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+  full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+  node_est[[tr]] <- full_est$est
+}
+relist1 <- lapply(lapply(1:length(sampletrees), function(x) array(unlist(node_est), 
+dim = c(2, 52, 3, 100))[,,1,x]), list)
+ppgmMESS(sp_data_min, sp_data_max, est=list(relist1) ,sampletrees, fossils=biofossils,
+timeslice=10, which.biovars=1, which.plot="all")
+}
 }
 \seealso{
 \code{ppgm()}

@@ -2,16 +2,21 @@ Package: ppgm
 Type: Package
 Title: PaleoPhyloGeographic Modeling of Niches and Species Distributions
 Version: 1.0.0
-Authors@R: c(person("A. Michelle","Lawing", role = c("aut","cre"), email = "alawing@tamu.edu"), person("Alexandra", "Howard", role = "aut", email = "alexandra.howard@tamu.edu"), person("Maria-Aleja", "Hurtado-Materon", role = "aut"))
-Description: This package reconstructs paleoclimate niches using phylogenetic
-    comparative methods and projects reconstructed niches onto paleoclimate maps.
+Authors@R: c(person("A. Michelle","Lawing", role = "aut", email = "alawing@tamu.edu"), person("Alexandra", "Howard", role = c("aut","cre"), email = "alexandra.howard@tamu.edu"), person("Maria-Aleja", "Hurtado-Materon", role = "aut"))
+Description: Reconstruction of paleoclimate niches using phylogenetic comparative 
+    methods and projection reconstructed niches onto paleoclimate maps.
     The user can specify various models of trait evolution or estimate the best fit
     model, include fossils, use one or multiple phylogenies for inference, and make
     animations of shifting suitable habitat through time. This model was first used
-    in Lawing and Polly (2011) doi: 10.1371/journal.pone.0028554.
-Imports: animation, ape, fields, geiger, methods, phangorn, phytools, sp
-Depends: R (> 4.3.1)
+    in Lawing and Polly (2011), and further implemented in Lawing et al (2016) and 
+    Rivera et al (2020).
+    Lawing and Polly (2011) Pleistocene climate, phylogeny and climate envelope models: An integrative approach to better understand species' response to climate change. PLoS ONE <doi: 10.1371/journal.pone.0028554>
+    Lawing et al (2016) Including fossils in phylogenetic climate reconstructions: A deep time perspective on the climatic niche evolution and diversification of spiny lizards (Sceloporus). The American Naturalist. <doi: 10.1086/687202>
+    Rivera et al (2020) Reconstructing historical shifts in suitable habitat of Sceloporus lineages using phylogenetic niche modelling. Journal of Biogeography <doi: 10.1111/jbi.13915>.
+Imports: animation, ape, fields, geiger, methods, phangorn, phytools
+Depends: R (>= 4.3.0), R (>= 2.10), sp
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression:xz
 RoxygenNote: 7.3.1

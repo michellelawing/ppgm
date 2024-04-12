@@ -1,6 +1,7 @@
 #' @title getGeoRate
 #' @description This function calculates the change in suitable habitat through time in geographic space.
-#' @usage getGeoRate(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' @usage getGeoRate(envelope, tree, which.biovars, use.paleoclimate=TRUE, 
+#' paleoclimateUser=NULL)
 #' @param envelope the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}
 #' @param tree the phylogeny of all species. An object of class phylo
 #' @param which.biovars a vector of the numbers of the bioclimate variables to be included. The bioclimate variables number correspond to the table at (https://www.worldclim.org/data/bioclim.html).
@@ -11,29 +12,29 @@
 #' @return \code{geo_size} change in geographic size of suitable climate envelope
 #' @return \code{time_int} time intervals
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
-#' @importFrom utils data
 #' @importFrom fields rdist.earth
 #' @importFrom phangorn Ancestors
 #' @importFrom stats dist
 #' @export
 #' @seealso getEnvelopes()
 #' @examples
-#' data(beastLeache)
+#' data(sampletrees)
 #' data(occurrences)
 #' data(paleoclimate)
-#' tree <- beastLeache[[25]]
-#' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-#' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-#' treedata_min <- treedata(tree,sp_data_min,sort=TRUE,warnings=F)
-#' treedata_max <- treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-#' full_est <- nodeEstimateFossils(treedata_min,treedata_max)
+#' tree <- sampletrees[[25]]
+#' occu <- getBioclimVars(occurrences, which.biovars=1)
+#' sp_data_min<- tapply(occu[,4],occu$Species,min)
+#' sp_data_max<- tapply(occu[,4],occu$Species,max)
+#' treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
+#' treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
+#' \dontrun{full_est <- nodeEstimateFossils(treedata_min,treedata_max)
 #' node_est <- full_est$est
 #' example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-#' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
+#' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)}
 
 getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL){
   if(use.paleoclimate) {
-    data(paleoclimate) #uses paleoclimate data from package
+    paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
     if(is.null(paleoclimateUser)) {
       stop("paleoclimateUser argument must be provided when use.paleoclimate is FALSE.") #uses user inputted paleoclimate

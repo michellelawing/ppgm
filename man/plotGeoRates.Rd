@@ -26,6 +26,28 @@ plotGeoRates
 \details{
 Creates plot with gray background of all pairwise comparisons of change in geo center and area through time. Blue points on top show the sequential change in geo center and expansion/contraction for all lineages
 }
+\examples{
+data(sampletrees)
+data(occurrences)
+biooccu <- getBioclimVars(occurrences, which.biovars=1)
+sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
+sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
+treedata_min <- treedata_max <- node_est <- envelope <- list()
+geo_center<-array(NA,dim=c(100,53,21,21))
+geo_size<-array(NA,dim=c(100,53,21,21))
+\dontrun{for (tr in 1:length(sampletrees)){
+  treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
+  treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
+  full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+  node_est[[tr]] <- full_est$est
+  envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
+  temp <- getGeoRate(envelope[[tr]], sampletrees[[tr]], which.biovars=1)
+  geo_center[tr,,,]<-temp$geo_center
+  geo_size[tr,,,]<-temp$geo_size
+}
+plotGeoRates(geo_center, geo_size, temp$time_int, sampletrees)
+}
+}
 \seealso{
 \code{getGeoRates}
 }
