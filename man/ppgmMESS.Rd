@@ -4,7 +4,7 @@
 \alias{ppgmMESS}
 \title{ppgmMESS}
 \usage{
-ppgmMESS(cem_min, cem_max, est, tree, fossils, timeslice, 
+ppgmMESS(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, 
 which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, 
 which.plot = c("all","mess","none"))
 }
@@ -21,7 +21,7 @@ which.plot = c("all","mess","none"))
 
 \item{timeslice}{the time in million of years ago to project MESS maps (0 to 20). can handle single timeslice or vector of times.}
 
-\item{which.biovars}{the biovariable number(s) between 1 and 19. handles vectors.}
+\item{which.biovars}{the biovariable number(s) between 1 and 19.}
 
 \item{path}{directory where plots should be stored}
 
@@ -40,24 +40,15 @@ plots MESS maps of climate envelope model for specific time slices. Can either p
 \examples{
 data(sampletrees)
 data(occurrences)
-data(scel_fossils)
-biooccu <- getBioclimVars(occurrences, which.biovars=1)
-sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
-sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
-treedata_min <- treedata_max <- node_est <- list()
-\dontrun{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
-rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
-for (tr in 1:length(sampletrees)){
-  treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
-  treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
-  full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
-  node_est[[tr]] <- full_est$est
-}
-relist1 <- lapply(lapply(1:length(sampletrees), function(x) array(unlist(node_est), 
-dim = c(2, 52, 3, 100))[,,1,x]), list)
-ppgmMESS(sp_data_min, sp_data_max, est=list(relist1) ,sampletrees, fossils=biofossils,
-timeslice=10, which.biovars=1, which.plot="all")
-}
+bounds <- list(sigsq = c(min = 0, max = 1000000))
+\dontrun{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
+model = "BM", which.biovars = c(1), bounds = bounds, 
+control = list(niter = 20))
+#extract min climate envelope for species
+cem_min <- cbind(test_ppgm$cem[, 1], test_ppgm$cem[, 2], test_ppgm$cem[, 3])
+cem_max <- cbind(test_ppgm$cem[, 7], test_ppgm$cem[, 8], test_ppgm$cem[, 9])
+rownames(cem_min) <- rownames(cem_max) <- rownames(test_ppgm$cem)
+ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,which.biovars=c(1,4,15),which.plot="all")}
 }
 \seealso{
 \code{ppgm()}

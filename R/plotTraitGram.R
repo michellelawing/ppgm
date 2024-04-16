@@ -55,7 +55,7 @@ plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, w
     traitgram_min <- cbind(c(treedata_min$data[,i],colMeans(t(temp[1,1:(num_species-1),i,]))),M)
     traitgram_max <- cbind(c(treedata_max$data[,i],colMeans(t(temp[2,1:(num_species-1),i,]))),M)
     #check on the size of graph and size of text
-    grDevices::pdf(paste(path,"bio",i,".pdf",sep=""),width=7,height=7,pointsize=10,useDingbats=F)
+    grDevices::pdf(paste(path,colnames(treedata_min$data)[i],".pdf",sep=""),width=7,height=7,pointsize=10,useDingbats=F)
     plot(traitgram_min,ylim=rev(range(c(traitgram_min_min[,2]))),xlim=range(c(paleoclimate[[1]][,which.biovars[i]+3],
                                                                               paleoclimate[[11]][,which.biovars[i]+3], paleoclimate[[16]][,which.biovars[i]+3], traitgram_min_min,traitgram_max_max))
          ,type="n",xlab=colnames(treedata_min$data)[i],ylab="Time (mya)")
