@@ -16,7 +16,7 @@ library(sp)
 #library(ppgm)
 
 #Set bounds for analysis
-#bounds <- list(sigsq = c(min = 0, max = 1000000), SE = c(0, 0.1), alpha = c(min = 0, max = 150), a = c(min = -1, max = 1), slope = c(min = -100, max = 100), lambda = c(min = 0, max = 1), kappa = c(min = 0, max = 1), delta = c(min = 0, max = 10), drift = c(min = -100, max = 100))
+bounds <- list(sigsq = c(min = 0, max = 1000000), SE = c(0, 0.1), alpha = c(min = 0, max = 150), a = c(min = -1, max = 1), slope = c(min = -100, max = 100), lambda = c(min = 0, max = 1), kappa = c(min = 0, max = 1), delta = c(min = 0, max = 10), drift = c(min = -100, max = 100))
 
 data(occurrences)
 data(beastLeache)

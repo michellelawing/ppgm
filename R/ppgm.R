@@ -47,7 +47,6 @@
 #' model = "BM", which.biovars = c(1), bounds = bounds, 
 #' control = list(niter = 20))}
 
-
 ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                 which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,
                 bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
@@ -150,28 +149,26 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   geo_move<-data.frame(colMeans(lineage_geo_center,na.rm=T),colMeans(lineage_geo_size,na.rm=T))
   names(geo_move)<-c("RateGeoCenter","RateGeoSize")
   #print model aicc if model estimated
-  print_table_min <- NA
-  print_table_max <- NA
+  print_table_min <- list()
+  print_table_max <- list()
+  aicmin <- aicmax <- list()
   if(model=="estimate"){
     models <- c("BM", "OU", "EB", "lambda", "kappa", "delta")
-    for(trees in 1:length(model_min)){
-      for(traits in 1:length(model_min[[1]][[1]])){
+    for(traits in 1:length(model_min[[1]][[1]])){
+      clean<-list()
+      for(trees in 1:length(model_min)){
         temp_min <- cbind(unlist(sapply(models, function(z) model_min[[trees]][[1]][[traits]]$fitted[[z]]['aicc'])))
         temp_max <- cbind(unlist(sapply(models, function(z) model_min[[trees]][[1]][[traits]]$fitted[[z]]['aicc'])))
         colnames(temp_min) <- colnames(temp_max) <- paste("aicc", trees, 1, traits, sep = "")
-        if(trees == 1){
-          print_table_min <- temp_min
-          print_table_max <- temp_max
+        print_table_min[[trees]] <- as.vector(temp_min)
+        print_table_max[[trees]] <- as.vector(temp_max)
         }
-        else {
-          print_table_min <- cbind(print_table_min, temp_min)
-          print_table_max <- cbind(print_table_max, temp_max)
-        }
-        rownames(print_table_min) <- rownames(print_table_max) <- models
+      clean <- as.data.frame(print_table_min) 
+      colnames(clean) <- paste("tree",c(1:length(model_min)),sep="")
+      rownames(clean) <- models
+      aicmin[[traits]] <-clean     
       }
-    }
-    print_table_min <- print_table_min[-4,]
-    print_table_max <- print_table_max[-4,]
+    names(aicmin) <- paste("bio",which.biovars,sep="")
   }
   if(verbose){
     return(list(cem=cem,
@@ -185,8 +182,8 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
                 model_min=model_min,
                 model_max=model_max,
                 node_est=node_est,
-                print_table_min=print_table_min,
-                print_table_max=print_table_max))
+                aicmin=aicmin,
+                aicmax=aicmax))
   }  else{
     return(list(cem=cem,
                 geo_move=geo_move,
