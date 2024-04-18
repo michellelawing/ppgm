@@ -48,7 +48,8 @@ control = list(niter = 20))
 cem_min <- cbind(test_ppgm$cem[, 1], test_ppgm$cem[, 2], test_ppgm$cem[, 3])
 cem_max <- cbind(test_ppgm$cem[, 7], test_ppgm$cem[, 8], test_ppgm$cem[, 9])
 rownames(cem_min) <- rownames(cem_max) <- rownames(test_ppgm$cem)
-ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,which.biovars=c(1,4,15),which.plot="all")}
+ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,
+which.biovars=c(1,4,15),which.plot="all")}
 }
 \seealso{
 \code{ppgm()}

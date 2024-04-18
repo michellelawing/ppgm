@@ -164,11 +164,13 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
         print_table_max[[trees]] <- as.vector(temp_max)
         }
       clean <- as.data.frame(print_table_min) 
-      colnames(clean) <- paste("tree",c(1:length(model_min)),sep="")
-      rownames(clean) <- models
-      aicmin[[traits]] <-clean     
+      clean2 <- as.data.frame(print_table_max)
+      colnames(clean) <- colnames(clean2) <- paste("tree",c(1:length(model_min)),sep="")
+      rownames(clean) <- rownames(clean2) <- models
+      aicmin[[traits]] <- clean
+      aicmax[[traits]] <- clean2
       }
-    names(aicmin) <- paste("bio",which.biovars,sep="")
+    names(aicmin) <- names(aicmax) <- paste("bio",which.biovars,sep="")
   }
   if(verbose){
     return(list(cem=cem,
@@ -179,8 +181,6 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
                 time_int=time_int,
                 treedata_min=treedata_min,
                 treedata_max=treedata_max,
-                model_min=model_min,
-                model_max=model_max,
                 node_est=node_est,
                 aicmin=aicmin,
                 aicmax=aicmax))
