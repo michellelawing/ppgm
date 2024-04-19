@@ -33,7 +33,7 @@
 #' @return \code{treedata_max} list of trees with maximum bioclimatic variables
 #' @return \code{model_min} list of trees with minimum fitted model as specified in \code{model}
 #' @return \code{model_max} list of trees with maximum fitted model as specified in \code{model}
-#' @return \code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateFossils
+#' @return \code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateEnvelopes
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
 #' @importFrom utils data
 #' @importFrom ape is.binary
@@ -101,7 +101,7 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
   #to estimate nodes, place fossils randomly or as specified on edges from fossils.edges argument
   full_est <- list()
   for(pr in 1:permut){
-    full_est[[pr]] <- nodeEstimateFossils(treedata_min=treedata_min,treedata_max=treedata_max,fossils=fossils,fossils.edges=fossils.edges,model=model,bounds=bounds,control=control)
+    full_est[[pr]] <- nodeEstimateEnvelopes(treedata_min=treedata_min,treedata_max=treedata_max,fossils=fossils,fossils.edges=fossils.edges,model=model,bounds=bounds,control=control)
   }
   #####################
   node_est <- lapply(1:permut, function(p) full_est[[p]]$est)

@@ -29,7 +29,7 @@
 #' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
 #' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
 #' colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-#' \dontrun{nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max, 
+#' \dontrun{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
 #' model="BM", bounds=list(sigsq = c(min = 0, max = 1000000)))
 #' plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1)}
 

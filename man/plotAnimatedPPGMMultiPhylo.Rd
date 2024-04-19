@@ -38,7 +38,7 @@ treedata_min <- treedata_max <- node_est <- envelope <- list()
 \dontrun{for (tr in 1:length(sampletrees)){
   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
-  full_est <- nodeEstimateFossils(treedata_min[[tr]],treedata_max[[tr]])
+  full_est <- nodeEstimateEnvelopes(treedata_min[[tr]],treedata_max[[tr]])
   node_est[[tr]] <- full_est$est
   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
 }

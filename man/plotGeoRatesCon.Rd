@@ -35,7 +35,7 @@ sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
 treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
 treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-full_est <- nodeEstimateFossils(treedata_min,treedata_max)
+full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
 example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)

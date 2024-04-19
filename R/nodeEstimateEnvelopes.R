@@ -1,6 +1,6 @@
-#' @title nodeEstimateFossils
+#' @title nodeEstimateEnvelopes
 #' @description This function estimates nodes with the placement of fossils on randomly assigned or specified edges on a tree.
-#' @usage nodeEstimateFossils(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, 
+#' @usage nodeEstimateEnvelopes(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, 
 #' model="BM", bounds=list(), control=list())
 #' @param treedata_min tree data object with min estimate of the climate envelope – list where first object is phylogeny, and second object is array of species with climate data variables (species must match)
 #' @param treedata_max tree data object with max estimate of the climate envelope
@@ -39,12 +39,12 @@
 #' colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
 #' \dontrun{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
 #' rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
-#' nodeest<- nodeEstimateFossils(treedata_min=ex_min,treedata_max=ex_max, 
+#' nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
 #' model="BM",fossils=biofossils,
 #' bounds=list(sigsq = c(min = 0, max = 1000000)))}
 
 
-nodeEstimateFossils <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list()){
+nodeEstimateEnvelopes <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list()){
   num_species<-length(treedata_min$data[,1])
   num_traits<-length(treedata_min$data[1,])
   node<-array(NA,dim=c(2,num_species-1,num_traits))
