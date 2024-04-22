@@ -11,7 +11,7 @@
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
 #' @param which.biovars A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).
 #' @param path path to the directory where the results should be saved
-#' @details plots a trait gram over multiple phylogenetic trees
+#' @details plots a traitgram over multiple phylogenetic trees
 #' @importFrom utils data
 #' @importFrom ape dist.nodes
 #' @importFrom grDevices rgb

@@ -11,7 +11,7 @@
 #' @return \code{matchedClim} list of occurrences points for each lineage, for each time slice of paleoclimate data
 #' @return \code{lineage} list of lineage specific nodes, as output from phangorn::Ancestors
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
-#' @seealso getEnvelopes() getGeoRate()
+#' @seealso \code{getEnvelopes()} \code{getGeoRate()}
 #' @importFrom phangorn Ancestors
 #' @export
 #' @examples

@@ -16,7 +16,7 @@
 #' @importFrom phangorn Ancestors
 #' @importFrom stats dist
 #' @export
-#' @seealso getEnvelopes()
+#' @seealso \code{getEnvelopes()}
 #' @examples
 #' data(sampletrees)
 #' data(occurrences)

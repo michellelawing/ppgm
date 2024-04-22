@@ -47,7 +47,7 @@ example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
 example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)}
 }
 \seealso{
-getEnvelopes()
+\code{getEnvelopes()}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon

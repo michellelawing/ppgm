@@ -33,7 +33,7 @@ The time period 10 Ma uses the GCM by Micheels et al (2011) for the Tortonian.
 
 The time period 15 Ma uses the GCM by Krapp & Jungclaus (2011) for the Middle Miocene.
 
-For the one million year intervals outside the modern and past GCMs, the climate was interpolated based on the benthic marine foram stable oxygen isotope ratio curve from Ruddiman et al 1989. The scale of these variables is at a 50 km equidistant point grain size corresponding to Polly XX.
+For the one million year intervals outside the modern and past GCMs, the climate was interpolated based on the benthic marine foram stable oxygen isotope ratio curve from Ruddiman et al 1989. The scale of these variables is at a 50 km equidistant point grain size.
 }
 \examples{
 data(occurrences)
@@ -41,8 +41,6 @@ biooccur <- getBioclimVars(occurrences,which.biovars=c(3,5))
 #returns data frame with bioclimate variables 3 and 5 for occurrence data
 }
 \references{
-Polly;
-
 Hijmans, R. J. et al. (2005) Very high resolution interpolated climate surfaces for global land areas
 
 Krapp, M. and Jungclaus, J. H. (2011) The Middle Miocene climate as modeled in an atmosphere-ocean-biosphere model. Climate of the Past 7(4):1169-1188

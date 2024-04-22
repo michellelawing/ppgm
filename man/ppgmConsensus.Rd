@@ -61,11 +61,11 @@ verbose = TRUE)
 
 \code{treedata_max} list of trees with maximum bioclimatic variables
 
-\code{model_min} list of trees with minimum fitted model as specified in \code{model}
-
-\code{model_max} list of trees with maximum fitted model as specified in \code{model}
-
 \code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateEnvelopes
+
+\code{aicmin} if model is estimated, table of aic values for minimum trait values
+
+\code{aicmax} if model is estimated, table of aic values for maximum trait values
 }
 \description{
 ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. consensus version

@@ -31,9 +31,9 @@
 #' @return \code{time_int} matrix array of time intervals
 #' @return \code{treedata_min} list of trees with minimum bioclimatic variables
 #' @return \code{treedata_max} list of trees with maximum bioclimatic variables
-#' @return \code{model_min} list of trees with minimum fitted model as specified in \code{model}
-#' @return \code{model_max} list of trees with maximum fitted model as specified in \code{model}
 #' @return \code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateEnvelopes
+#' @return \code{aicmin} if model is estimated, table of aic values for minimum trait values
+#' @return \code{aicmax} if model is estimated, table of aic values for maximum trait values
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
 #' @importFrom utils data
 #' @importFrom ape is.binary
@@ -142,28 +142,28 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
   names(cem)<-c(paste(colnames(sp_data_mean),"Min",sep=""),paste(colnames(sp_data_mean),"Mean",sep=""),paste(colnames(sp_data_mean),"Max",sep=""))
   geo_move<-data.frame(colMeans(lineage_geo_center,na.rm=T),colMeans(lineage_geo_size,na.rm=T))
   names(geo_move)<-c("RateGeoCenter","RateGeoSize")
-  print_table_min <- NA
-  print_table_max <- NA
+  print_table_min <- list()
+  print_table_max <- list()
+  aicmin <- aicmax <- list()
   if(model=="estimate"){
     models <- c("BM", "OU", "EB", "lambda", "kappa", "delta")
-    for(trees in 1:length(model_min)){
-      for(traits in 1:length(model_min[[1]][[1]])){
-        temp_min <- cbind(unlist(sapply(models, function(z) model_min[[trees]][[1]][[traits]]$fitted[[z]]['aicc'])))
-        temp_max <- cbind(unlist(sapply(models, function(z) model_min[[trees]][[1]][[traits]]$fitted[[z]]['aicc'])))
+    for(traits in 1:length(model_min[[1]])){
+      clean<-list()
+      for(trees in 1:length(model_min)){
+        temp_min <- cbind(unlist(sapply(models, function(z) model_min[[1]][[traits]]$fitted[[z]]['aicc'])))
+        temp_max <- cbind(unlist(sapply(models, function(z) model_min[[1]][[traits]]$fitted[[z]]['aicc'])))
         colnames(temp_min) <- colnames(temp_max) <- paste("aicc", trees, 1, traits, sep = "")
-        if(trees == 1){
-          print_table_min <- temp_min
-          print_table_max <- temp_max
-        }
-        else {
-          print_table_min <- cbind(print_table_min, temp_min)
-          print_table_max <- cbind(print_table_max, temp_max)
-        }
-        rownames(print_table_min) <- rownames(print_table_max) <- models
+        print_table_min <- as.vector(temp_min)
+        print_table_max <- as.vector(temp_max)
       }
+      clean <- as.data.frame(print_table_min) 
+      clean2 <- as.data.frame(print_table_max)
+      colnames(clean) <- colnames(clean2) <- paste("tree1",sep="")
+      rownames(clean) <- rownames(clean2) <- models
+      aicmin[[traits]] <- clean
+      aicmax[[traits]] <- clean2
     }
-    print_table_min <- print_table_min[-4,]
-    print_table_max <- print_table_max[-4,]
+    names(aicmin) <- names(aicmax) <- paste("bio",which.biovars,sep="")
   }
   if(verbose){
     return(list(cem=cem,
@@ -173,11 +173,9 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
                 time_int=time_int,
                 treedata_min=treedata_min,
                 treedata_max=treedata_max,
-                model_min=model_min,
-                model_max=model_max,
                 node_est=node_est,
-                print_table_min=print_table_min,
-                print_table_max=print_table_max))
+                aicmin=aicmin,
+                aicmax=aicmax))
   }  else{
     return(list(cem=cem,
                 geo_move=geo_move,

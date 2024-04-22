@@ -11,10 +11,9 @@
 #' @details Modern time period uses the Hijmans et al. (2005) high resolution climate interpolations.
 #' @details The time period 10 Ma uses the GCM by Micheels et al (2011) for the Tortonian.
 #' @details The time period 15 Ma uses the GCM by Krapp & Jungclaus (2011) for the Middle Miocene.
-#' @details For the one million year intervals outside the modern and past GCMs, the climate was interpolated based on the benthic marine foram stable oxygen isotope ratio curve from Ruddiman et al 1989. The scale of these variables is at a 50 km equidistant point grain size corresponding to Polly XX.
+#' @details For the one million year intervals outside the modern and past GCMs, the climate was interpolated based on the benthic marine foram stable oxygen isotope ratio curve from Ruddiman et al 1989. The scale of these variables is at a 50 km equidistant point grain size.
 #' @return Returns a data frame with the original occurrences input appended with columns of bioclimate variables as specified. If fossils are included, the returned bioclimate variables are from the closest 1 Ma interval of isotopically scaled climate.
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon
-#' @references Polly;
 #' @references Hijmans, R. J. et al. (2005) Very high resolution interpolated climate surfaces for global land areas
 #' @references Krapp, M. and Jungclaus, J. H. (2011) The Middle Miocene climate as modeled in an atmosphere-ocean-biosphere model. Climate of the Past 7(4):1169-1188
 #' @references Micheels, A. et al. (2011) Analysis of heat transport mechanisms from a Late Miocene model experiment with a fully-coupled atmosphere-ocean general circulation model. Palaeogeography, Palaeoclimatology, Palaeocology 304: 337-350

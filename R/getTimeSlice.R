@@ -4,12 +4,12 @@
 #' @param timeSlice single numeric or a vector with the time (or times) to extract the estimated ancestor reconstructions.
 #' @param tree an object of the class "phylo" that should be dated
 #' @param trait a vector of both tip values and node estimates that correspond to tree
-#' @param model if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model, passes to \code{fitContinuous()}. Model options currently supported are: "BM", "OU", "EB", "lambda", "kappa", "delta"
+#' @param model if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model, passes to \code{geiger::fitContinuous()}. Model options currently supported are: "BM", "OU", "EB", "lambda", "kappa", "delta"
 #' @param plot.est a conditional stating whether or not to plot the results
 #' @details The estimated reconstruction relies on an interpolation between node or between tip and node estimates of the trait. This method assumes a constant rate of evolution along the lineage where the interpolation is taking place.
 #' @return \code{edge} for each time specified, a vector of edges that are present during that time are returned
 #' @return \code{est} for each time specified, a vector of estimates of the ancestral reconstruction along each edge
-#' @seealso \code{fitContinuous()}, \code{nodeEstimate()}
+#' @seealso \code{geiger::fitContinuous()}, \code{nodeEstimate()}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @importFrom ape dist.nodes
 #' @importFrom geiger treedata

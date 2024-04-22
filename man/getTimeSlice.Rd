@@ -13,7 +13,7 @@ getTimeSlice(timeSlice, tree, trait, model = "BM", plot.est = FALSE)
 
 \item{trait}{a vector of both tip values and node estimates that correspond to tree}
 
-\item{model}{if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model, passes to \code{fitContinuous()}. Model options currently supported are: "BM", "OU", "EB", "lambda", "kappa", "delta"}
+\item{model}{if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model, passes to \code{geiger::fitContinuous()}. Model options currently supported are: "BM", "OU", "EB", "lambda", "kappa", "delta"}
 
 \item{plot.est}{a conditional stating whether or not to plot the results}
 }
@@ -38,7 +38,7 @@ treedata_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
 ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))}
 }
 \seealso{
-\code{fitContinuous()}, \code{nodeEstimate()}
+\code{geiger::fitContinuous()}, \code{nodeEstimate()}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard

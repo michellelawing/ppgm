@@ -29,7 +29,7 @@ which.biovars, path="")
 Combine the node estimates based on random or specified fossil placement and plot them on a phylotrait gram in a specified directory.
 }
 \details{
-plots a trait gram over multiple phylogenetic trees
+plots a traitgram over multiple phylogenetic trees
 }
 \examples{
 data(sampletrees)

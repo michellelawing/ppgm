@@ -33,6 +33,8 @@
 #' @return \code{model_min} list of trees with minimum fitted model as specified in \code{model}
 #' @return \code{model_max} list of trees with maximum fitted model as specified in \code{model}
 #' @return \code{node_est} list of traits at each node for all trees, min and max for each species. As estimated by nodeEstimate and nodeEstimateEnvelopes
+#' @return \code{aicmin} if model is estimated, table of aic values for minimum trait values for all trees
+#' @return \code{aicmax} if model is estimated, table of aic values for maximum trait values for all trees
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria A. Hurtado-Materon
 #' @importFrom utils data
 #' @importFrom ape is.binary
