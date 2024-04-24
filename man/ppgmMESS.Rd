@@ -31,6 +31,9 @@ which.plot = c("all","mess","none"))
 
 \item{which.plot}{"all" plots trait maps and MESS, "mess" plots MESS map, "none" does not plot}
 }
+\value{
+list containing array of MESS scores for biovariables
+}
 \description{
 This creates a MESS map for given time slices, climate envelopes, and paleoclimate models.
 }
@@ -40,16 +43,17 @@ plots MESS maps of climate envelope model for specific time slices. Can either p
 \examples{
 data(sampletrees)
 data(occurrences)
+sampletrees <- sample(sampletrees,5)
 bounds <- list(sigsq = c(min = 0, max = 1000000))
-\dontrun{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
-model = "BM", which.biovars = c(1), bounds = bounds, 
+\donttest{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
+model = "BM", which.biovars = c(1,4,15), bounds = bounds, 
 control = list(niter = 20))
 #extract min climate envelope for species
 cem_min <- cbind(test_ppgm$cem[, 1], test_ppgm$cem[, 2], test_ppgm$cem[, 3])
 cem_max <- cbind(test_ppgm$cem[, 7], test_ppgm$cem[, 8], test_ppgm$cem[, 9])
 rownames(cem_min) <- rownames(cem_max) <- rownames(test_ppgm$cem)
-ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,
-which.biovars=c(1,4,15),which.plot="all")}
+mess <- ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,
+which.biovars=c(1,4,15), path=tempdir(), which.plot="none")}
 }
 \seealso{
 \code{ppgm()}

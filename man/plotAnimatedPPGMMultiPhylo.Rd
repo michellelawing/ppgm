@@ -31,6 +31,7 @@ Animated gif of species richness through time
 \examples{
 data(sampletrees)
 data(occurrences)
+sampletrees <- sample(sampletrees,5)
 biooccu <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
 sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
@@ -42,7 +43,7 @@ treedata_min <- treedata_max <- node_est <- envelope <- list()
   node_est[[tr]] <- full_est$est
   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
 }
-animatedplot <- plotAnimatedPPGMMultiPhylo(envelope,sampletrees,which.biovars=1)}
+animatedplot <- plotAnimatedPPGMMultiPhylo(envelope,sampletrees,which.biovars=1, path=tempdir())}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard

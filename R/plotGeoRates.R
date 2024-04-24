@@ -17,13 +17,14 @@
 #' @examples
 #' data(sampletrees)
 #' data(occurrences)
+#' sampletrees <- sample(sampletrees,5)
 #' biooccu <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
 #' sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
 #' treedata_min <- treedata_max <- node_est <- envelope <- list()
 #' geo_center<-array(NA,dim=c(100,53,21,21))
 #' geo_size<-array(NA,dim=c(100,53,21,21))
-#' \dontrun{for (tr in 1:length(sampletrees)){
+#' \donttest{for (tr in 1:length(sampletrees)){
 #'   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
 #'   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
 #'   full_est <- nodeEstimateEnvelopes(treedata_min[[tr]],treedata_max[[tr]])
@@ -33,10 +34,13 @@
 #'   geo_center[tr,,,]<-temp$geo_center
 #'   geo_size[tr,,,]<-temp$geo_size
 #' }
-#' plotGeoRates(geo_center, geo_size, temp$time_int, sampletrees)
+#' }
+#' \dontrun{plotGeoRates(geo_center, geo_size, temp$time_int, sampletrees, path="tempdir()")
 #' }
 
 plotGeoRates <- function(geo_center, geo_size, time_int, trees, path=""){
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
   grDevices::jpeg(paste(path,"geo_rates.jpg",sep=""),width=960,height=960,quality=100,pointsize=20)
   graphics::par(mfrow=c(2,1),mar=c(4,4,1,1),mgp=c(2.25,1,0))
   if(is.finite(max(geo_center))){ymax=max(geo_center)}
@@ -88,7 +92,7 @@ plotGeoRates <- function(geo_center, geo_size, time_int, trees, path=""){
 #' data(sampletrees)
 #' data(occurrences)
 #' tree <- sampletrees[[25]]
-#' \dontrun{occurrences <- getBioclimVars(occurrences, which.biovars=1)
+#' \donttest{occurrences <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 #' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
 #' treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
@@ -97,10 +101,13 @@ plotGeoRates <- function(geo_center, geo_size, time_int, trees, path=""){
 #' node_est <- full_est$est
 #' example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
 #' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)
-#' plotGeoRatesCon(example_getGeoRate$geo_center,example_getGeoRate$geo_size,
-#' example_getGeoRate$time_int, trees = trees[[1]])}
+#' }
+#' \dontrun{plotGeoRatesCon(example_getGeoRate$geo_center,example_getGeoRate$geo_size,
+#' example_getGeoRate$time_int, trees = trees[[1]], path=tempdir())}
 
 plotGeoRatesCon <- function(geo_center, geo_size, time_int, trees, path=""){
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
   grDevices::jpeg(paste(path,"geo_rates.jpg",sep=""),width=960,height=960,quality=100,pointsize=20)
   graphics::par(mfrow=c(2,1),mar=c(4,4,1,1),mgp=c(2.25,1,0))
   if(is.finite(max(geo_center))){ymax=max(geo_center)}

@@ -53,6 +53,7 @@ function adds fossils to trees according to \code{addFossil()}, then passes to \
 }
 \examples{
 data(sampletrees)
+sampletrees <- sample(sampletrees,5)
 data(occurrences)
 data(scel_fossils)
 occu <- getBioclimVars(occurrences, which.biovars=1)
@@ -61,7 +62,7 @@ sp_data_max<- tapply(occu[,4],occu$Species,max)
 ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
 ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
 colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-\dontrun{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
+\donttest{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
 rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
 nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
 model="BM",fossils=biofossils,

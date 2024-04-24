@@ -33,15 +33,17 @@ Combine the node estimates based on random or specified fossil placement and plo
 \examples{
 data(sampletrees)
 data(occurrences)
+sampletrees <- sample(sampletrees,5)
 occurrences <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
 ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
 ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
 colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-\dontrun{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
+\donttest{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
 model="BM", bounds=list(sigsq = c(min = 0, max = 1000000)))
-plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1)}
+plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1, 
+path=paste(tempdir(),"/",sep=""))}
 }
 \seealso{
 plotTraitGramMultiPhylo

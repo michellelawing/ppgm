@@ -55,7 +55,7 @@ data(occurrences)
 occurrences <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 ex <- geiger::treedata(sampletrees[[1]], sp_data_min)
-\dontrun{nodeEstimate(ex, 1, model = 'OU')} #runs OU model
+\donttest{nodeEstimate(ex, 1, model = 'OU')} #runs OU model
 }
 \references{
 Butler, M. A. and King, A. A. (2004) Phylogenetic comparative analysis: a modeling approach for adaptive evolution. American Naturalist, 164:683-695.

@@ -6,9 +6,9 @@
 \usage{
 ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, 
 model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), 
-path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, 
-bounds = list(), control = list(), use.paleoclimate = TRUE, 
-paleoclimateUser = NULL, verbose = TRUE)
+path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, 
+plot.GeoRates = FALSE, bounds = list(), control = list(), 
+use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 }
 \arguments{
 \item{occurrences}{a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.}
@@ -80,7 +80,7 @@ If the 19 bioclimate variables are not supplied with the occurrences or with the
 data(sampletrees)
 data(occurrences)
 bounds <- list(sigsq = c(min = 0, max = 1000000))
-\dontrun{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
+\donttest{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
 model = "BM", which.biovars = c(1), bounds = bounds, 
 control = list(niter = 20))}
 }

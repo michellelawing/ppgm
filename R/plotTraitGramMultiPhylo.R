@@ -12,6 +12,7 @@
 #' @param which.biovars A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).
 #' @param path path to the directory where the results should be saved
 #' @details plots a traitgram over multiple phylogenetic trees
+#' @return a trait gram for minimum and maximum of biovariables over a distribution of phylogenetic trees
 #' @importFrom utils data
 #' @importFrom ape dist.nodes
 #' @importFrom grDevices rgb
@@ -21,18 +22,20 @@
 #' @examples
 #' data(sampletrees)
 #' data(occurrences)
+#' sampletrees <- sample(sampletrees,5)
 #' biooccu <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
 #' sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
 #' treedata_min <- treedata_max <- node_est <- envelope <- list()
-#' \dontrun{for (tr in 1:length(sampletrees)){
+#' \donttest{for (tr in 1:length(sampletrees)){
 #'   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
 #'   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
 #'   full_est <- nodeEstimateEnvelopes(treedata_min[[tr]],treedata_max[[tr]])
 #'   node_est[[tr]]<-lapply(1, function(p) full_est$est)
 #'   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
 #' }
-#' plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1)
+#' plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1, 
+#' path=paste(tempdir(),"/",sep=""))
 #' }
 
 

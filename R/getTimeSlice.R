@@ -21,7 +21,7 @@
 #' occurrences <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 #' treedata_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
-#' \dontrun{ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
+#' \donttest{ex_est <- nodeEstimate(treedata_min, 1, model = 'BM') #runs BM model
 #' ex_timeSlice <- getTimeSlice(10,treedata_min$phy,c(treedata_min$data[,1],ex_est$est))}
 
 

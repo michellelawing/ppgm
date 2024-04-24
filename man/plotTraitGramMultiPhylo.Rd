@@ -25,6 +25,9 @@ which.biovars, path="")
 
 \item{path}{path to the directory where the results should be saved}
 }
+\value{
+a trait gram for minimum and maximum of biovariables over a distribution of phylogenetic trees
+}
 \description{
 Combine the node estimates based on random or specified fossil placement and plot them on a phylotrait gram in a specified directory.
 }
@@ -34,18 +37,20 @@ plots a traitgram over multiple phylogenetic trees
 \examples{
 data(sampletrees)
 data(occurrences)
+sampletrees <- sample(sampletrees,5)
 biooccu <- getBioclimVars(occurrences, which.biovars=1)
 sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
 sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
 treedata_min <- treedata_max <- node_est <- envelope <- list()
-\dontrun{for (tr in 1:length(sampletrees)){
+\donttest{for (tr in 1:length(sampletrees)){
   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
   full_est <- nodeEstimateEnvelopes(treedata_min[[tr]],treedata_max[[tr]])
   node_est[[tr]]<-lapply(1, function(p) full_est$est)
   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
 }
-plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1)
+plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1, 
+path=paste(tempdir(),"/",sep=""))
 }
 }
 \seealso{

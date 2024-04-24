@@ -41,7 +41,7 @@ sp_data_min<- tapply(occu[,4],occu$Species,min)
 sp_data_max<- tapply(occu[,4],occu$Species,max)
 treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F)
 treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
-\dontrun{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
+\donttest{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
 example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)}

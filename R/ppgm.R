@@ -2,9 +2,9 @@
 #' @description ppgm makes a paleophylogeographic species distribution model using the bioclimate envelope method for a specified time period. Currently, models are only available for North America.
 #' @usage ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, 
 #' model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), 
-#' path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F, 
-#' bounds = list(), control = list(), use.paleoclimate = TRUE, 
-#' paleoclimateUser = NULL, verbose = TRUE)
+#' path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, 
+#' plot.GeoRates = FALSE, bounds = list(), control = list(), 
+#' use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
 #' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
 #' @param trees phylogenies of species from first column of occurrences argument. Object of class multiphylo.
@@ -45,12 +45,12 @@
 #' data(sampletrees)
 #' data(occurrences)
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
-#' \dontrun{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
+#' \donttest{test_ppgm <- ppgm(occurrences = occurrences,trees = sampletrees, 
 #' model = "BM", which.biovars = c(1), bounds = bounds, 
 #' control = list(niter = 20))}
 
 ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
-                which.biovars = c(1:19), path = "", plot.TraitGram = F, plot.AnimatedMaps = F, plot.GeoRates = F,
+                which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE,
                 bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
   if(is(trees,"phylo")){
     stop("ERROR: only one tree supplied. Please use ppgmConsensus")
@@ -153,7 +153,7 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   #print model aicc if model estimated
   print_table_min <- list()
   print_table_max <- list()
-  aicmin <- aicmax <- list()
+  AICcmin <- AICcmax <- list()
   if(model=="estimate"){
     models <- c("BM", "OU", "EB", "lambda", "kappa", "delta")
     for(traits in 1:length(model_min[[1]][[1]])){
@@ -169,10 +169,10 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
       clean2 <- as.data.frame(print_table_max)
       colnames(clean) <- colnames(clean2) <- paste("tree",c(1:length(model_min)),sep="")
       rownames(clean) <- rownames(clean2) <- models
-      aicmin[[traits]] <- clean
-      aicmax[[traits]] <- clean2
+      AICcmin[[traits]] <- clean
+      AICcmax[[traits]] <- clean2
       }
-    names(aicmin) <- names(aicmax) <- paste("bio",which.biovars,sep="")
+    names(AICcmin) <- names(AICcmax) <- paste("bio",which.biovars,sep="")
   }
   if(verbose){
     return(list(cem=cem,
@@ -184,8 +184,8 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
                 treedata_min=treedata_min,
                 treedata_max=treedata_max,
                 node_est=node_est,
-                aicmin=aicmin,
-                aicmax=aicmax))
+                AICcmin=AICcmin,
+                AICcmax=AICcmax))
   }  else{
     return(list(cem=cem,
                 geo_move=geo_move,

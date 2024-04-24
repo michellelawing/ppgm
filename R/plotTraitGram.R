@@ -23,15 +23,17 @@
 #' @examples
 #' data(sampletrees)
 #' data(occurrences)
+#' sampletrees <- sample(sampletrees,5)
 #' occurrences <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 #' sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
 #' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
 #' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
 #' colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-#' \dontrun{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
+#' \donttest{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
 #' model="BM", bounds=list(sigsq = c(min = 0, max = 1000000)))
-#' plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1)}
+#' plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1, 
+#' path=paste(tempdir(),"/",sep=""))}
 
 plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
   num_traits <- length(treedata_min$data[1,])
@@ -47,7 +49,7 @@ plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, w
   }
   for(i in 1:num_traits){
     M <- ape::dist.nodes(treedata_min$phy)[1,num_species+1]-ape::dist.nodes(treedata_min$phy)[,num_species+1]
-    temp <- array(unlist(node_est),dim=c(2,length(node_est[[1]][1,,1]),num_traits,length(node_est)))
+    temp <- array(unlist(node_est),dim=c(2,length(node_est[1,,1]),num_traits,length(node_est)))
     traitgram_min_min <- cbind(c(treedata_min$data[,i],sapply(1:(num_species-1),function(x) min(temp[1,x,i,]))),M)
     traitgram_min_max <- cbind(c(treedata_min$data[,i],sapply(1:(num_species-1),function(x) max(temp[1,x,i,]))),M)
     traitgram_max_min <- cbind(c(treedata_max$data[,i],sapply(1:(num_species-1),function(x) min(temp[2,x,i,]))),M)

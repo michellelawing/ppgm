@@ -16,9 +16,11 @@
 #' @importFrom graphics points
 #' @importFrom grDevices colorRampPalette
 #' @importFrom graphics text
+#' @export
 #' @examples
 #' data(sampletrees)
 #' data(occurrences)
+#' sampletrees <- sample(sampletrees,5)
 #' biooccu <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
 #' sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
@@ -30,7 +32,7 @@
 #'   node_est[[tr]] <- full_est$est
 #'   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
 #' }
-#' animatedplot <- plotAnimatedPPGMMultiPhylo(envelope,sampletrees,which.biovars=1)}
+#' animatedplot <- plotAnimatedPPGMMultiPhylo(envelope,sampletrees,which.biovars=1, path=tempdir())}
 
 
 plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
@@ -71,6 +73,8 @@ plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", whic
       return(hld)
     })
   }
+  oldpar <- par(no.readonly = TRUE)
+  on.exit(par(oldpar))
   animation::saveGIF(for(i in 1:length(paleoclimate)){
     richnesscountMean<-rowMeans(array(unlist(lapply(1:length(tree),function(tr) richnesscount[[tr]][[i]])),dim=c(length(richnesscount[[1]][[i]]),length(tree))),na.rm=TRUE)
     lq<-array(unlist(lapply(1:length(tree),function(tr) richnesscount[[tr]][[i]])),dim=c(length(richnesscount[[1]][[i]]),length(tree)))

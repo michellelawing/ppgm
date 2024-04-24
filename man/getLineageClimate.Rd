@@ -43,7 +43,7 @@ sp_data_max<- tapply(occu[,4],occu$Species,max)
 treedata_min <- geiger::treedata(tree,sp_data_min,sort=TRUE,warnings=F) 
 treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
 #estimate node values using Brownian Motion
-\dontrun{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
+\donttest{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 node_est <- full_est$est #extract only node estimates
 #calculate climate envelopes
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)

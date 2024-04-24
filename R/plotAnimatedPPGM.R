@@ -29,7 +29,7 @@
 #' \dontrun{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 #' node_est <- full_est$est
 #' example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-#' animatedplot <- plotAnimatedPPGM(example_getEnvelopes,tree,which.biovars=1)}
+#' animatedplot <- plotAnimatedPPGM(example_getEnvelopes,tree,which.biovars=1,path=tempdir())}
 
 
 plotAnimatedPPGM<-function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){

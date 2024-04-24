@@ -40,7 +40,7 @@
 #' occurrences <- getBioclimVars(occurrences, which.biovars=1)
 #' sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
 #' ex <- geiger::treedata(sampletrees[[1]], sp_data_min)
-#' \dontrun{nodeEstimate(ex, 1, model = 'OU')} #runs OU model
+#' \donttest{nodeEstimate(ex, 1, model = 'OU')} #runs OU model
 
 
 nodeEstimate <- function(treedata.obj, traitnum, model="BM", bounds=list(), control=list(), plot.est=FALSE) {

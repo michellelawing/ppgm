@@ -1,7 +1,7 @@
 Package: ppgm
 Type: Package
 Title: PaleoPhyloGeographic Modeling of Climate Niches and Species Distributions
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(person("A. Michelle","Lawing", role = c("aut","cph"), email = "alawing@tamu.edu"), person("Alexandra", "Howard", role = c("aut","cre"), email = "alexandra.howard@ag.tamu.edu"), person("Maria-Aleja", "Hurtado-Materon", role = "aut"))
 Description: Reconstruction of paleoclimate niches using phylogenetic comparative 
     methods and projection reconstructed niches onto paleoclimate maps.
@@ -10,20 +10,18 @@ Description: Reconstruction of paleoclimate niches using phylogenetic comparativ
     animations of shifting suitable habitat through time. This model was first used
     in Lawing and Polly (2011), and further implemented in Lawing et al (2016) and 
     Rivera et al (2020).
-    Lawing and Polly (2011) Pleistocene climate, phylogeny and climate envelope models: 
-    An integrative approach to better understand species' response to climate change. 
-    PLoS ONE <doi: 10.1371/journal.pone.0028554>
-    Lawing et al (2016) Including fossils in phylogenetic climate reconstructions: 
-    A deep time perspective on the climatic niche evolution and diversification of 
-    spiny lizards (Sceloporus). The American Naturalist. <doi: 10.1086/687202>
-    Rivera et al (2020) Reconstructing historical shifts in suitable habitat of Sceloporus
-    lineages using phylogenetic niche modelling. Journal of Biogeography 
-    <doi: 10.1111/jbi.13915>.
+    Lawing and Polly (2011) <doi:10.1371/journal.pone.0028554> "Pleistocene climate,
+    phylogeny and climate envelope models: An integrative approach to better 
+    understand species' response to climate change"
+    Lawing et al (2016) <doi:10.1086/687202> "Including fossils in phylogenetic 
+    climate reconstructions: A deep time perspective on the climatic niche evolution
+    and diversification of spiny lizards (Sceloporus)"
+    Rivera et al (2020) <doi:10.1111/jbi.13915> "Reconstructing historical shifts 
+    in suitable habitat of Sceloporus lineages using phylogenetic niche modelling.".
 Imports: animation, ape, fields, geiger, methods, phangorn, phytools
-Depends: R (>= 4.3.0), R (>= 2.10), sp
+Depends: R (>= 4.3.0), R (>= 2.10), sp, sf
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 RoxygenNote: 7.3.1
-

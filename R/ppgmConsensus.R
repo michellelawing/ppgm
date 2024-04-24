@@ -47,7 +47,7 @@
 #' #set bounds for analysis
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
 #' ex_mytree <- sampletrees[[3]] #single tree
-#' \dontrun{test_fossil_con <- ppgmConsensus(occurrences = occurrences, 
+#' \donttest{test_fossil_con <- ppgmConsensus(occurrences = occurrences, 
 #' fossils = scel_fossils, trees = ex_mytree, fossils.edges = FALSE, model = "BM", 
 #' permut = 5, which.biovars = 1, bounds = bounds, control = list(niter = 20))}
 
@@ -144,7 +144,7 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
   names(geo_move)<-c("RateGeoCenter","RateGeoSize")
   print_table_min <- list()
   print_table_max <- list()
-  aicmin <- aicmax <- list()
+  AICcmin <- AICcmax <- list()
   if(model=="estimate"){
     models <- c("BM", "OU", "EB", "lambda", "kappa", "delta")
     for(traits in 1:length(model_min[[1]])){
@@ -160,10 +160,10 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
       clean2 <- as.data.frame(print_table_max)
       colnames(clean) <- colnames(clean2) <- paste("tree1",sep="")
       rownames(clean) <- rownames(clean2) <- models
-      aicmin[[traits]] <- clean
-      aicmax[[traits]] <- clean2
+      AICcmin[[traits]] <- clean
+      AICcmax[[traits]] <- clean2
     }
-    names(aicmin) <- names(aicmax) <- paste("bio",which.biovars,sep="")
+    names(AICcmin) <- names(AICcmax) <- paste("bio",which.biovars,sep="")
   }
   if(verbose){
     return(list(cem=cem,
@@ -174,8 +174,8 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
                 treedata_min=treedata_min,
                 treedata_max=treedata_max,
                 node_est=node_est,
-                aicmin=aicmin,
-                aicmax=aicmax))
+                AICcmin=AICcmin,
+                AICcmax=AICcmax))
   }  else{
     return(list(cem=cem,
                 geo_move=geo_move,

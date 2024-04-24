@@ -43,7 +43,7 @@ treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
 \dontrun{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-animatedplot <- plotAnimatedPPGM(example_getEnvelopes,tree,which.biovars=1)}
+animatedplot <- plotAnimatedPPGM(example_getEnvelopes,tree,which.biovars=1,path=tempdir())}
 }
 \author{
 A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon

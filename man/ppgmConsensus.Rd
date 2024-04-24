@@ -80,7 +80,7 @@ data(scel_fossils)
 #set bounds for analysis
 bounds <- list(sigsq = c(min = 0, max = 1000000))
 ex_mytree <- sampletrees[[3]] #single tree
-\dontrun{test_fossil_con <- ppgmConsensus(occurrences = occurrences, 
+\donttest{test_fossil_con <- ppgmConsensus(occurrences = occurrences, 
 fossils = scel_fossils, trees = ex_mytree, fossils.edges = FALSE, model = "BM", 
 permut = 5, which.biovars = 1, bounds = bounds, control = list(niter = 20))}
 }
