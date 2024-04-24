@@ -32,7 +32,7 @@ which.plot = c("all","mess","none"))
 \item{which.plot}{"all" plots trait maps and MESS, "mess" plots MESS map, "none" does not plot}
 }
 \value{
-list containing array of MESS scores for biovariables
+list containing array of MESS scores for bioclimatic variables
 }
 \description{
 This creates a MESS map for given time slices, climate envelopes, and paleoclimate models.
