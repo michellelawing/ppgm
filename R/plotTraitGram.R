@@ -38,6 +38,7 @@
 plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
   num_traits <- length(treedata_min$data[1,])
   num_species <- length(treedata_min$data[,1])
+  nodes <- (2*num_species)-2
   if(use.paleoclimate) {
     utils::data(paleoclimate) #uses paleoclimate data from package
   } else {
@@ -66,10 +67,10 @@ plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, w
     graphics::lines(c(min(paleoclimate[[6]][,which.biovars[i]+3]),max(paleoclimate[[6]][,which.biovars[i]+3])),c(5,5),col="antiquewhite",lwd=10)
     graphics::lines(c(min(paleoclimate[[11]][,which.biovars[i]+3]),max(paleoclimate[[11]][,which.biovars[i]+3])),c(10,10),col="antiquewhite",lwd=10)
     graphics::lines(c(min(paleoclimate[[16]][,which.biovars[i]+3]),max(paleoclimate[[16]][,which.biovars[i]+3])),c(15,15),col="antiquewhite",lwd=10)
-    for(j in 1:104) {lines(c(traitgram_max_min[j,1],traitgram_max_max[j,1]),c(traitgram_max_min[j,2],traitgram_max_min[j,2]),col="skyblue1",lwd=6)}
-    for(j in 1:104) {lines(c(traitgram_min_min[j,1],traitgram_min_max[j,1]),c(traitgram_min_min[j,2],traitgram_min_min[j,2]),col="grey",lwd=4)}
-    for(j in 1:104) {lines(traitgram_max[treedata_max$phy$edge[j,],1],traitgram_max[treedata_max$phy$edge[j,],2],col="skyblue2")}
-    for(j in 1:104) {lines(traitgram_min[treedata_min$phy$edge[j,],1],traitgram_min[treedata_min$phy$edge[j,],2],col="darkgrey")}
+    for(j in 1:nodes) {lines(c(traitgram_max_min[j,1],traitgram_max_max[j,1]),c(traitgram_max_min[j,2],traitgram_max_min[j,2]),col="skyblue1",lwd=6)}
+    for(j in 1:nodes) {lines(c(traitgram_min_min[j,1],traitgram_min_max[j,1]),c(traitgram_min_min[j,2],traitgram_min_min[j,2]),col="grey",lwd=4)}
+    for(j in 1:nodes) {lines(traitgram_max[treedata_max$phy$edge[j,],1],traitgram_max[treedata_max$phy$edge[j,],2],col="skyblue2")}
+    for(j in 1:nodes) {lines(traitgram_min[treedata_min$phy$edge[j,],1],traitgram_min[treedata_min$phy$edge[j,],2],col="darkgrey")}
     if(length(fossils)!=1){for(j in 1:length(fossils[,1])) {points(fossils[j,i+3],fossils[j,1],col="black",pch=16)}}
     dev.off()
   }

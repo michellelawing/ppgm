@@ -43,6 +43,7 @@ plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossil
   alpha.trans=as.integer(255/(1+log(length(node_est))))
   num_traits<-length(treedata_min[[1]]$data[1,])
   num_species<-length(treedata_min[[1]]$data[,1])
+  nodes <- (2*num_species)-2
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
@@ -78,10 +79,10 @@ plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossil
     graphics::lines(c(min(paleoclimate[[11]][,which.biovars[i]+3]),max(paleoclimate[[11]][,which.biovars[i]+3])),c(10,10),col="antiquewhite",lwd=10)
     graphics::lines(c(min(paleoclimate[[16]][,which.biovars[i]+3]),max(paleoclimate[[16]][,which.biovars[i]+3])),c(15,15),col="antiquewhite",lwd=10)
     for(j in 1:length(node_est)){
-      for(k in 1:104) {lines(c(traitgram_max_min[[j]][k,1],traitgram_max_max[[j]][k,1]),c(traitgram_max_min[[j]][k,2],traitgram_max_min[[j]][k,2]),col=grDevices::rgb(135,206,235,alpha=alpha.trans,maxColorValue=255),lwd=6)}
-      for(k in 1:104) {lines(c(traitgram_min_min[[j]][k,1],traitgram_min_max[[j]][k,1]),c(traitgram_min_min[[j]][k,2],traitgram_min_min[[j]][k,2]),col=grDevices::rgb(128,128,128,alpha=alpha.trans,maxColorValue=255),lwd=4)}
-      for(k in 1:104) {lines(traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],1],traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],2],col=grDevices::rgb(135,206,235,alpha=alpha.trans,maxColorValue=255))}
-      for(k in 1:104) {lines(traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],1],traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],2],col=grDevices::rgb(128,128,128,alpha=alpha.trans,maxColorValue=255))}
+      for(k in 1:nodes) {lines(c(traitgram_max_min[[j]][k,1],traitgram_max_max[[j]][k,1]),c(traitgram_max_min[[j]][k,2],traitgram_max_min[[j]][k,2]),col=grDevices::rgb(135,206,235,alpha=alpha.trans,maxColorValue=255),lwd=6)}
+      for(k in 1:nodes) {lines(c(traitgram_min_min[[j]][k,1],traitgram_min_max[[j]][k,1]),c(traitgram_min_min[[j]][k,2],traitgram_min_min[[j]][k,2]),col=grDevices::rgb(128,128,128,alpha=alpha.trans,maxColorValue=255),lwd=4)}
+      for(k in 1:nodes) {lines(traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],1],traitgram_max[[j]][treedata_max[[j]]$phy$edge[k,],2],col=grDevices::rgb(135,206,235,alpha=alpha.trans,maxColorValue=255))}
+      for(k in 1:nodes) {lines(traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],1],traitgram_min[[j]][treedata_min[[j]]$phy$edge[k,],2],col=grDevices::rgb(128,128,128,alpha=alpha.trans,maxColorValue=255))}
     }
     if(length(fossils)!=1){for(k in 1:length(fossils[,1])) {points(fossils[k,i+3],fossils[k,1],col="black",pch=16)}}
     dev.off()
