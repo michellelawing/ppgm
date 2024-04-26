@@ -42,7 +42,7 @@
 #' mess <- ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,
 #' which.biovars=c(1,4,15), path=tempdir(), which.plot="none")}
 
-ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none")){
+ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none")){
   #load paleoclimate data
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
@@ -105,7 +105,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, whic
       spdata <- sp::SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
       sp::proj4string(spdata)  <- sp::CRS("+init=epsg:4326")
       spdata <- sp::spTransform(spdata, CRS("+init=epsg:26978"))
-      if(fossils!=FALSE){if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
+      if(!is.null(fossils)){if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
         spfossils <- sp::SpatialPoints(fossils[, 2:3])
         sp::proj4string(spfossils)  <- sp::CRS("+init=epsg:4326")
         spfossils <- sp::spTransform(spfossils, sp::CRS("+init=epsg:26978"))
@@ -140,7 +140,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, whic
         grDevices::pdf(paste("MESS",timeslice[p],"Bio",which.biovars[b],".pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
         plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
         graphics::points(spdata,cex=1,pch=16,col=colorscheme[round(MESS_score[[p]][,b] - min(MESS_score[[p]][,b]) + 1)],xlim=c(-200,0),ylim=c(0,90))
-        if(fossils!=FALSE){if(sum(fossils[,1]==(timeslice[p] + 1))!=0){
+        if(!is.null(fossils)){if(sum(fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
         }
         }
@@ -155,7 +155,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, whic
         spdata <- sp::SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
         sp::proj4string(spdata)  <- sp::CRS("+init=epsg:4326")
         spdata <- sp::spTransform(spdata, sp::CRS("+init=epsg:26978"))
-        if(fossils!=FALSE){if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
+        if(!is.null(fossils)){if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
           spfossils <- sp::SpatialPoints(fossils[, 2:3])
           sp::proj4string(spfossils)  <- sp::CRS("+init=epsg:4326")
           spfossils <- sp::spTransform(spfossils, sp::CRS("+init=epsg:26978"))
@@ -167,7 +167,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, whic
         grDevices::pdf(paste("MESS",timeslice[p],"Multi.pdf",sep=""),width=80,height=80,pointsize=100,useDingbats = F)
         plot(spdata,cex=1,xlab="",ylab="",axes=FALSE,pch=16,col="red")
         graphics::points(spdata,cex=1,pch=16,col=colorscheme[round(apply(MESS_score[[p]], 1, min) - min(MESS_score[[p]]) + 1)],xlim=c(-200,0),ylim=c(0,90))
-        if(fossils!=FALSE){if(sum(fossils[,1]==(timeslice[p] + 1))!=0){
+        if(!is.null(fossils)){if(sum(fossils[,1]==(timeslice[p] + 1))!=0){
           points(spfossils,cex=2,pch=16,col="black")
          }
         }
