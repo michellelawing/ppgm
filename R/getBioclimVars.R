@@ -1,11 +1,12 @@
 #' @title getBioclimVars
 #' @description This function retrieves the bioclimatic variables described in Nix & Busby (1986) for the specified variables and the specified time period.
 #' @usage getBioclimVars(occurrences, which.biovars=c(1:19), 
-#' use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20))
 #' @param occurrences a matrix or data.frame with three columns and rows to represent individuals. The first column must be species name for extant occurrences or the age in closest Ma for fossil occurrences. Second and third column must be Longitude and Latitude.
 #' @param which.biovars a vector of the numbers of the bioclimatic variables that should be returned. The bioclimatic variables number correspond to the table at (https://www.worldclim.org/data/bioclim.html).
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @details The occurrences argument should contain all extant or all fossils. Columns should be in the format: Species, Longitude, Latitude for extant data.
 #' @details If using the provided paleoclimate data:
 #' @details Modern time period uses the Hijmans et al. (2005) high resolution climate interpolations.
@@ -27,7 +28,7 @@
 #' #returns data frame with bioclimate variables 3 and 5 for occurrence data
 
 
-getBioclimVars <- function(occurrences, which.biovars=c(1:19), use.paleoclimate=TRUE, paleoclimateUser=NULL){
+getBioclimVars <- function(occurrences, which.biovars=c(1:19), use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20)){
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
@@ -58,9 +59,10 @@ getBioclimVars <- function(occurrences, which.biovars=c(1:19), use.paleoclimate=
     if(is.numeric(occurrences[1,1])){
       temp <- array(NA, dim=c(length(occurrences[,1]), length(which.biovars)))
       for(i in 1:length(occurrences[,1])){
-        anothertemp <- as.matrix(paleoclimate[[as.integer(occurrences[i,1])]][,2:3])
+        layer <- which(abs(layerAge - occurrences[i,1]) == min(abs(layerAge - occurrences[i,1])))
+        anothertemp <- as.matrix(paleoclimate[[layer]][,2:3])
         calc_dist <- fields::rdist.earth(anothertemp,t(as.matrix(occurrences[i,2:3])))
-        temp[i,] <- unlist(paleoclimate[[as.integer(occurrences[i,1])]][which.min(calc_dist),which.biovars+3])
+        temp[i,] <- unlist(paleoclimate[[layer]][which.min(calc_dist),which.biovars+3])
       }
       occurrences <- cbind(occurrences,temp)
       colnames(occurrences) <- c("Age", "Longitude", "Latitude", paste("bio",which.biovars,sep=""))

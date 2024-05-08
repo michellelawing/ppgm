@@ -1,12 +1,13 @@
 #' @title getGeoRate
 #' @description This function calculates the change in suitable habitat through time in geographic space.
 #' @usage getGeoRate(envelope, tree, which.biovars, use.paleoclimate=TRUE, 
-#' paleoclimateUser=NULL)
+#' paleoclimateUser=NULL, layerAge=c(0:20))
 #' @param envelope the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}
 #' @param tree the phylogeny of all species. An object of class phylo
 #' @param which.biovars a vector of the numbers of the bioclimate variables to be included. The bioclimate variables number correspond to the table at (https://www.worldclim.org/data/bioclim.html).
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @details Calculates rate of geographic change of all lineages. Outputs both the geographic center change, and the geographic size change.
 #' @return \code{geo_center} change in geographic center of suitable climate envelope
 #' @return \code{geo_size} change in geographic size of suitable climate envelope
@@ -30,9 +31,9 @@
 #' \donttest{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 #' node_est <- full_est$est
 #' example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-#' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)}
+#' example_getGeoRate <- getGeoRate(example_getEnvelopes, tree, which.biovars=1)}
 
-getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL){
+getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20)){
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
@@ -43,11 +44,11 @@ getGeoRate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, pal
     }
   }
   temp_min <- lapply(1:length(paleoclimate),function(i){
-    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,2,j])})
+    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[i],tree,envelope[,2,j])})
     temp <- t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
   temp_max <- lapply(1:length(paleoclimate),function(i){
-    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,5,j])})
+    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[i],tree,envelope[,5,j])})
     temp <- t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
   lineage <- lapply(1:length(temp_min[[1]][1,]),function(i) {c(i,phangorn::Ancestors(tree,i))})

@@ -1,8 +1,8 @@
 #' @title ppgmMESS
 #' @description This creates a MESS map for given time slices, climate envelopes, and paleoclimate models.
-#' @usage ppgmMESS(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, 
+#' @usage ppgmMESS(cem_min, cem_max, est, tree, fossils=NULL, timeslice, 
 #' which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, 
-#' which.plot = c("all","mess","none"))
+#' layerAge=c(0:20), which.plot = c("all","mess","none"))
 #' @param cem_min the cem min output from the ppgm function. cbind() if there are multiple variables.
 #' @param cem_max the cem max output from the ppgm function. cbind() if there are multiple variables.
 #' @param est the node_est output from the ppgm function, in list format. [tree][1][min and max][no.of species]
@@ -13,6 +13,7 @@
 #' @param path directory where plots should be stored
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @param which.plot "all" plots trait maps and MESS, "mess" plots MESS map, "none" does not plot
 #' @details plots MESS maps of climate envelope model for specific time slices. Can either plot individual biovariables, or combined.
 #' @return list containing array of MESS scores for bioclimatic variables
@@ -42,7 +43,7 @@
 #' mess <- ppgmMESS(cem_min,cem_max,test_ppgm$node_est,tree=sampletrees,timeslice=10,
 #' which.biovars=c(1,4,15), path=tempdir(), which.plot="none")}
 
-ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, which.plot = c("all","mess","none")){
+ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, layerAge=c(0:20), which.plot = c("all","mess","none")){
   #load paleoclimate data
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
@@ -63,7 +64,8 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which
   colorscheme <- grDevices::colorRampPalette(c("blue","cyan","greenyellow","yellow","darkorange","red"))(250)
   MESS_score <- as.list(array(NA,dim=length(timeslice)))
   for(p in 1:length(timeslice)){
-    MESS_score[[p]] <- array(NA,dim=c(length(paleoclimate[[(timeslice[p] + 1)]][,1]),length(which.biovars)))
+    layer <- which(abs(layerAge - timeslice[p]) == min(abs(layerAge - timeslice[p])))
+    MESS_score[[p]] <- array(NA,dim=c(length(paleoclimate[[layer]][,1]),length(which.biovars)))
   }
   #getenvelope
   for(b in 1:length(which.biovars)){
@@ -102,15 +104,16 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which
     temp_max <- apply(adj_data, 1, max)
 
     for(p in 1:length(timeslice)){
-      spdata <- sp::SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
-      sp::proj4string(spdata)  <- sp::CRS("+init=epsg:4326")
-      spdata <- sp::spTransform(spdata, CRS("+init=epsg:26978"))
-      if(!is.null(fossils)){if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
-        spfossils <- sp::SpatialPoints(fossils[, 2:3])
-        sp::proj4string(spfossils)  <- sp::CRS("+init=epsg:4326")
-        spfossils <- sp::spTransform(spfossils, sp::CRS("+init=epsg:26978"))
+      layer <- which(abs(layerAge - timeslice[p]) == min(abs(layerAge - timeslice[p])))
+      spdata <- sp::SpatialPoints(paleoclimate[[layer]][, 2:3])
+      sp::proj4string(spdata)  <- sp::CRS("EPSG:4326")
+      spdata <- sp::spTransform(spdata, CRS("EPSG:26978"))
+      if(!is.null(fossils)){if(sum(fossils[, 1] <= timeslice[p] & fossils[,2] >= (timeslice[p] + 1)) != 0){
+        spfossils <- sp::SpatialPoints(fossils[, 3:4])
+        sp::proj4string(spfossils)  <- sp::CRS("EPSG:4326")
+        spfossils <- sp::spTransform(spfossils, sp::CRS("EPSG:26978"))
         spfossils@data[,1] <- fossils[, 1]
-        spfossils <- spfossils[fossils[, 1] == (timeslice[p] + 1), ]
+        spfossils <- spfossils[fossils[, 1] <= timeslice[p] & fossils[,2] >= (timeslice[p] + 1), ]
         }
       }
       getlineages <- which(branch_time < (timeslice[p] + 1) & branch_time >= ((timeslice[p] + 1) - 1))
@@ -118,10 +121,10 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which
       reference_set <- c(adj_data[getlineages,])
       min_val <- min(temp_min[getlineages])
       max_val <- max(temp_max[getlineages])
-      for(g in 1:length(paleoclimate[[(timeslice[p] + 1)]][,1])) {
-        fi <- (sum(reference_set < paleoclimate[[(timeslice[p] + 1)]][g, (which.biovars[b] + 3)]) / length(reference_set) ) * 100
+      for(g in 1:length(paleoclimate[[layer]][,1])) {
+        fi <- (sum(reference_set < paleoclimate[[layer]][g, (which.biovars[b] + 3)]) / length(reference_set) ) * 100
         if(fi == 0){
-          MESS_score[[p]][g, b] <- 100 * (paleoclimate[[(timeslice[p] + 1)]][g, (which.biovars[b] + 3)] - min_val)/(max_val - min_val)
+          MESS_score[[p]][g, b] <- 100 * (paleoclimate[[layer]][g, (which.biovars[b] + 3)] - min_val)/(max_val - min_val)
         } else if (fi < 50) {
           MESS_score[[p]][g, b] <- 0
           #MESS_score[[p]][g, b] <- 2 * fi
@@ -129,7 +132,7 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which
           MESS_score[[p]][g, b] <- 0
           #MESS_score[[p]][g, b] <- 2 * (100 - fi)
         } else if (fi == 100) {
-          MESS_score[[p]][g, b] <- (100 * (max_val - paleoclimate[[(timeslice[p] + 1)]][g, (which.biovars[b] + 3)]))/(max_val - min_val)
+          MESS_score[[p]][g, b] <- (100 * (max_val - paleoclimate[[layer]][g, (which.biovars[b] + 3)]))/(max_val - min_val)
         }
       }
       MESS_score[[p]] <- (apply(MESS_score[[p]], 2, scale, center = F) * 100) - 1
@@ -152,13 +155,14 @@ ppgmMESS <- function(cem_min, cem_max, est, tree, fossils=NULL, timeslice, which
     if(which.plot == "all" | which.plot == "mess"){
       for(p in 1:length(timeslice)){
         #transform spatial data
-        spdata <- sp::SpatialPoints(paleoclimate[[(timeslice[p] + 1)]][, 2:3])
-        sp::proj4string(spdata)  <- sp::CRS("+init=epsg:4326")
-        spdata <- sp::spTransform(spdata, sp::CRS("+init=epsg:26978"))
+        layer <- which(abs(layerAge - timeslice[p]) == min(abs(layerAge - timeslice[p])))
+        spdata <- sp::SpatialPoints(paleoclimate[[layer]][, 2:3])
+        sp::proj4string(spdata)  <- sp::CRS("EPSG:4326")
+        spdata <- sp::spTransform(spdata, sp::CRS("EPSG:26978"))
         if(!is.null(fossils)){if(sum(fossils[, 1] == (timeslice[p] + 1)) != 0){
           spfossils <- sp::SpatialPoints(fossils[, 2:3])
-          sp::proj4string(spfossils)  <- sp::CRS("+init=epsg:4326")
-          spfossils <- sp::spTransform(spfossils, sp::CRS("+init=epsg:26978"))
+          sp::proj4string(spfossils)  <- sp::CRS("EPSG:4326")
+          spfossils <- sp::spTransform(spfossils, sp::CRS("EPSG:26978"))
           spfossils@data[,1] <- fossils[, 1]
           spfossils <- spfossils[fossils[, 1] == (timeslice[p] + 1), ]
           }

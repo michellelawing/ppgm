@@ -5,7 +5,7 @@
 \title{getBioclimVars}
 \usage{
 getBioclimVars(occurrences, which.biovars=c(1:19), 
-use.paleoclimate=TRUE, paleoclimateUser=NULL)
+use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20))
 }
 \arguments{
 \item{occurrences}{a matrix or data.frame with three columns and rows to represent individuals. The first column must be species name for extant occurrences or the age in closest Ma for fossil occurrences. Second and third column must be Longitude and Latitude.}
@@ -15,6 +15,8 @@ use.paleoclimate=TRUE, paleoclimateUser=NULL)
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 }
 \value{
 Returns a data frame with the original occurrences input appended with columns of bioclimate variables as specified. If fossils are included, the returned bioclimate variables are from the closest 1 Ma interval of isotopically scaled climate.
