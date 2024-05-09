@@ -6,7 +6,7 @@
 \usage{
 plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, 
 fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, 
-which.biovars, path="")
+layerAge=c(0:20), which.biovars, path="")
 }
 \arguments{
 \item{treedata_min}{tree data object with min estimate of the climate envelope}
@@ -15,11 +15,13 @@ which.biovars, path="")
 
 \item{node_est}{the estimate of all the nodes, both min and max. Must be in format [[trees]][[permut]][2,species,trait]}
 
-\item{fossils}{a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.}
+\item{fossils}{a matrix with four columns of min age, max age, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.}
 
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 
 \item{which.biovars}{A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).}
 
@@ -36,12 +38,14 @@ plots a traitgram over multiple phylogenetic trees
 }
 \examples{
 data(sampletrees)
-data(occurrences)
 sampletrees <- sample(sampletrees,5)
-biooccu <- getBioclimVars(occurrences, which.biovars=1)
-sp_data_min<- tapply(biooccu[,4],biooccu$Species,min)
-sp_data_max<- tapply(biooccu[,4],biooccu$Species,max)
-treedata_min <- treedata_max <- node_est <- envelope <- list()
+data(occurrences)
+occu <- getBioclimVars(occurrences, which.biovars=c(1,2))
+sp_data_min<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,min)) 
+sp_data_max<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,max))
+ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min, sort=TRUE)
+ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max, sort=TRUE)
+colnames(ex_min$data)<- colnames(ex_max$data)<-c("bio1","bio2")  #labels biovars
 \donttest{for (tr in 1:length(sampletrees)){
   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)

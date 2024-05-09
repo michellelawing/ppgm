@@ -1,14 +1,20 @@
 #' @title nodeEstimateEnvelopes
-#' @description This function estimates nodes with the placement of fossils on randomly assigned or specified edges on a tree.
-#' @usage nodeEstimateEnvelopes(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, 
-#' model="BM", bounds=list(), control=list())
+#' @description This function estimates climate envelopes at nodes with the optional placement of fossils on randomly assigned or specified edges on a tree.
+#' @usage nodeEstimateEnvelopes(treedata_min, treedata_max, fossils=FALSE, 
+#' fossils.edges=FALSE, model="BM", bounds=list(), control=list(), 
+#' use.paleoclimate = TRUE, paleoclimateUser = NULL, layerAge = c(0:20), 
+#' which.biovars = which.biovars)
 #' @param treedata_min tree data object with min estimate of the climate envelope – list where first object is phylogeny, and second object is array of species with climate data variables (species must match)
 #' @param treedata_max tree data object with max estimate of the climate envelope
-#' @param fossils the estimate of the climate envelope of the fossil occurrences
+#' @param fossils a matrix with three columns of age, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.
 #' @param fossils.edges the edge number that the fossil occurs on
 #' @param model the model of evolution to use in the ancestral state reconstruction. Options are "estimate", "BM", "OU", "EB", "lambda", "kappa", "delta".
 #' @param bounds bounds used for the model, passes to \code{fitContinuous()}, uses default if none specified.
 #' @param control setting used for optimization of the model likelihood. Passes to \code{fitContinuous()}.
+#' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
+#' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
+#' @param which.biovars A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).
 #' @details function adds fossils to trees according to \code{addFossil()}, then passes to \code{nodeEstimate()}.
 #' @return an object of the class "nodeEstimate".
 #' @return \code{model}    if model = "estimate", the best fit model of evolution. If the model was specified, then model is the specified model.
@@ -24,28 +30,27 @@
 #' @seealso \code{nodeEstimate}, \code{fitContinuous}
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @importFrom ape which.edge
+#' @importFrom ape node.depth.edgelength
 #' @importFrom geiger treedata
 #' @importFrom ape drop.tip
+#' @importFrom stringi stri_detect_fixed
 #' @export
 #' @examples
 #' data(sampletrees)
 #' sampletrees <- sample(sampletrees,5)
 #' data(occurrences)
-#' data(scel_fossils)
-#' occu <- getBioclimVars(occurrences, which.biovars=1)
-#' sp_data_min<- tapply(occu[,4],occu$Species,min)
-#' sp_data_max<- tapply(occu[,4],occu$Species,max)
-#' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
-#' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
-#' colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-#' \donttest{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
-#' rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
-#' nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
-#' model="BM",fossils=biofossils,
+#' occu <- getBioclimVars(occurrences, which.biovars=c(1,2))
+#' sp_data_min<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,min))
+#' sp_data_max<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,max))
+#' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min, sort=TRUE)
+#' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max, sort=TRUE)
+#' colnames(ex_min$data)<- colnames(ex_max$data)<-c("bio1","bio2")  #labels biovars
+#' \donttest{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
+#' model="BM",which.biovars=c(1,2),
 #' bounds=list(sigsq = c(min = 0, max = 1000000)))}
 
 
-nodeEstimateEnvelopes <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list()){
+nodeEstimateEnvelopes <- function(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, model="BM", bounds=list(), control=list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, layerAge = c(0:20), which.biovars = which.biovars){
   num_species<-length(treedata_min$data[,1])
   num_traits<-length(treedata_min$data[1,])
   node<-array(NA,dim=c(2,num_species-1,num_traits))
@@ -58,7 +63,10 @@ nodeEstimateEnvelopes <- function(treedata_min, treedata_max, fossils=FALSE, fos
   } else {
     addRangeFossils <- as.integer(colMeans((treedata_max$data - treedata_min$data)/4))
   }
+  #randomly assigns fossils and extracts biovariables for time period
   if(!is.logical(fossils)){
+    biofossils <- array(NA,dim=c(length(fossils[,1]),3))
+    colnames(biofossils) <- c("Age","Long","Lat")
     for(i in 1:length(fossils[,1])){
       if(is.logical(fossils.edges)) {f.edge <- NA}
       if(!is.logical(fossils.edges)) {
@@ -68,12 +76,14 @@ nodeEstimateEnvelopes <- function(treedata_min, treedata_max, fossils=FALSE, fos
           f.edge <- ape::which.edge(treedata_min$phy,fossils.edges[i])
         }
       }
-      treedata_min <- geiger::treedata(addFossil(treedata_min$phy, mintime = fossils[i,1], maxtime = fossils[i,1] + 1, name = rownames(fossils)[i],edge = f.edge), rbind(treedata_min$data,fossils[i,colnames(treedata_min$data),drop=F] - addRangeFossils),sort=TRUE,warnings=F)
-      rownames(treedata_min$data)<-treedata_min$phy$tip.label
-      colnames(treedata_min$data)<-c.names
-      treedata_max <- geiger::treedata(addFossil(treedata_max$phy, mintime = fossils[i,1], maxtime = fossils[i,1] + 1, name = rownames(fossils)[i],edge = f.edge), rbind(treedata_max$data,fossils[i,colnames(treedata_max$data),drop=F] + addRangeFossils),sort=TRUE,warnings=F)
-      rownames(treedata_max$data)<-treedata_max$phy$tip.label
-      colnames(treedata_max$data)<-c.names
+      fossiltree <- addFossil(treedata_min$phy, mintime = fossils[i,1], maxtime = fossils[i,2], name = paste0("fossil",i), edge = f.edge)
+      fossilnodeage <- as.integer(max(node.depth.edgelength(fossiltree)) - node.depth.edgelength(fossiltree)[which(stringi::stri_detect_fixed(fossiltree$tip.label,paste0("fossil",i)))])
+      biofossils[i,] <- c(fossilnodeage,fossils[i,3:4,drop=F])
+      newbiofossils <- getBioclimVars(biofossils[i,,drop=F], which.biovars = which.biovars, use.paleoclimate = use.paleoclimate, paleoclimateUser = paleoclimateUser, layerAge = layerAge)
+      extract <-newbiofossils[,-c(1:3),drop=F]
+      rownames(extract) <- paste0("fossil",i)
+      treedata_min <- geiger::treedata(fossiltree, rbind(treedata_min$data,extract-addRangeFossils),sort=TRUE,warnings=F)
+      treedata_max <- geiger::treedata(fossiltree, rbind(treedata_max$data,extract+addRangeFossils),sort=TRUE,warnings=F)
     }
   }
   treedata_min$phy$node.label<-treedata_max$phy$node.label<-((length(treedata_min$phy$tip)+1):((length(treedata_min$phy$tip)*2)-1))

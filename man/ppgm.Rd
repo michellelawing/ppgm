@@ -8,12 +8,13 @@ ppgm(occurrences, fossils = FALSE, trees, fossils.edges = FALSE,
 model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), 
 path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, 
 plot.GeoRates = FALSE, bounds = list(), control = list(), 
-use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+use.paleoclimate = TRUE, paleoclimateUser = NULL, layerAge=c(0:20), 
+verbose = TRUE)
 }
 \arguments{
 \item{occurrences}{a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.}
 
-\item{fossils}{a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".}
+\item{fossils}{a matrix with four columns of min age, max age, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".}
 
 \item{trees}{phylogenies of species from first column of occurrences argument. Object of class multiphylo.}
 
@@ -42,6 +43,8 @@ use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 
 \item{verbose}{default true, returns all outputs. If FALSE then returns only climate envelopes and geographic data}
 }

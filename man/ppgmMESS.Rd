@@ -4,9 +4,9 @@
 \alias{ppgmMESS}
 \title{ppgmMESS}
 \usage{
-ppgmMESS(cem_min, cem_max, est, tree, fossils=FALSE, timeslice, 
+ppgmMESS(cem_min, cem_max, est, tree, fossils=NULL, timeslice, 
 which.biovars, path = "", use.paleoclimate=TRUE, paleoclimateUser = NULL, 
-which.plot = c("all","mess","none"))
+layerAge=c(0:20), which.plot = c("all","mess","none"))
 }
 \arguments{
 \item{cem_min}{the cem min output from the ppgm function. cbind() if there are multiple variables.}
@@ -28,6 +28,8 @@ which.plot = c("all","mess","none"))
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 
 \item{which.plot}{"all" plots trait maps and MESS, "mess" plots MESS map, "none" does not plot}
 }
