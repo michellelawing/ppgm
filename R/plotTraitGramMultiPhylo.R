@@ -22,24 +22,14 @@
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
 #' data(sampletrees)
-#' sampletrees <- sample(sampletrees,5)
 #' data(occurrences)
-#' occu <- getBioclimVars(occurrences, which.biovars=c(1,2))
-#' sp_data_min<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,min)) 
-#' sp_data_max<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,max))
-#' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min, sort=TRUE)
-#' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max, sort=TRUE)
-#' colnames(ex_min$data)<- colnames(ex_max$data)<-c("bio1","bio2")  #labels biovars
-#' \donttest{for (tr in 1:length(sampletrees)){
-#'   treedata_min[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_min,sort=TRUE,warnings=F)
-#'   treedata_max[[tr]] <- geiger::treedata(sampletrees[[tr]],sp_data_max,sort=TRUE,warnings=F)
-#'   full_est <- nodeEstimateEnvelopes(treedata_min[[tr]],treedata_max[[tr]])
-#'   node_est[[tr]]<-lapply(1, function(p) full_est$est)
-#'   envelope[[tr]] <- getEnvelopes(treedata_min[[tr]], treedata_max[[tr]], node_est[[tr]])
-#' }
-#' plotTraitGramMultiPhylo(treedata_min,treedata_max, node_est, which.biovars=1, 
-#' path=paste(tempdir(),"/",sep=""))
-#' }
+#' bounds <- list(sigsq = c(min = 0, max = 1000000))
+#' sample <-sample(sampletrees,5)
+#' \donttest{test_ppgm <- ppgm(occurrences = occurrences,trees = sample, 
+#' model = "BM", which.biovars = c(1), bounds = bounds, 
+#' control = list(niter = 20))}
+#' \dontrun{plotTraitGramMultiPhylo(test_ppgm$treedata_min,
+#' test_ppgm$treedata_max,test_ppgm$node_est)}
 
 
 plotTraitGramMultiPhylo <- function(treedata_min, treedata_max, node_est, fossils=FALSE, use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20), which.biovars, path=""){

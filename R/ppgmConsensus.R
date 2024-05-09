@@ -45,7 +45,6 @@
 #' data(sampletrees)
 #' data(occurrences)
 #' data(scel_fossils)
-#' #set bounds for analysis
 #' bounds <- list(sigsq = c(min = 0, max = 1000000))
 #' ex_mytree <- sampletrees[[3]] #single tree
 #' \donttest{test_fossil_con <- ppgmConsensus(occurrences = occurrences, 

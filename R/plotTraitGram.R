@@ -24,19 +24,12 @@
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @examples
 #' data(sampletrees)
-#' sampletrees <- sample(sampletrees,5)
 #' data(occurrences)
-#' occu <- getBioclimVars(occurrences, which.biovars=c(1,2))
-#' sp_data_min<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,min)) 
-#' sp_data_max<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,max))
-#' ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min, sort=TRUE)
-#' ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max, sort=TRUE)
-#' colnames(ex_min$data)<- colnames(ex_max$data)<-c("bio1","bio2")  #labels biovars
-#' \donttest{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
-#' model="BM",which.biovars=c(1,2),
-#' bounds=list(sigsq = c(min = 0, max = 1000000)))
-#' plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=c(1,2), 
-#' path=paste(tempdir(),"/",sep=""))}
+#' bounds <- list(sigsq = c(min = 0, max = 1000000))
+#' ex_mytree <- sampletrees[[3]] #single tree
+#' \donttest{test_con <- ppgmConsensus(occurrences = occurrences, trees = ex_mytree, 
+#' which.biovars = 1, bounds = bounds, control = list(niter = 20))}
+#' \dontrun{plotTraitGram(test_con$treedata_min,test_con$treedata_max,test_con$node_est)}
 
 plotTraitGram <- function(treedata_min, treedata_max, node_est, fossils=FALSE, which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20)){
   num_traits <- length(treedata_min$data[1,])
