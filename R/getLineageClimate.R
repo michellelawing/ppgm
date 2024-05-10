@@ -1,12 +1,13 @@
 #' @title getLineageClimate
 #' @description This function calculates the suitable climate for each specific lineage, starting at the tips and going back through time to the root.
 #' @usage getLineageClimate(envelope, tree, which.biovars, 
-#' use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20))
 #' @param envelope the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}
 #' @param tree the phylogeny of all species. An object of class phylo
 #' @param which.biovars a vector of the numbers of the bioclimate variables to be included. The bioclimate variables number correspond to the table at (https://www.worldclim.org/data/bioclim.html).
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @details Calculates rate of geographic change of all lineages. Outputs both the geographic center change, and the geographic size change.
 #' @return \code{matchedClim} list of occurrences points for each lineage, for each time slice of paleoclimate data
 #' @return \code{lineage} list of lineage specific nodes, as output from phangorn::Ancestors
@@ -35,7 +36,7 @@
 #' #calculate lineage specific climate
 #' example_getLinClim <- getLineageClimate(example_getEnvelopes, tree, which.biovars=1)}
 
-getLineageClimate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL){
+getLineageClimate <- function(envelope, tree, which.biovars, use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20)){
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
   } else {
@@ -46,11 +47,11 @@ getLineageClimate <- function(envelope, tree, which.biovars, use.paleoclimate=TR
     }
   }
   temp_min <- lapply(1:length(paleoclimate),function(i){
-    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,2,j])})
+    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[i],tree,envelope[,2,j])})
     temp <- t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
   temp_max <- lapply(1:length(paleoclimate),function(i){
-    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,5,j])})
+    temp <- lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[i],tree,envelope[,5,j])})
     temp <- t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
   lineage <- lapply(1:length(temp_min[[1]][1,]),function(i) {c(i,phangorn::Ancestors(tree,i))})

@@ -1,7 +1,7 @@
 #' @title plotAnimatedPPGMMultiPhylo
 #' @description This function creates an animated gif showing the change in modeled suitable habitat through time in geographic space. It requires ImageMagick or GraphicsMagick to be previously installed in the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
 #' @usage plotAnimatedPPGMMultiPhylo(envelope, tree, filename="ppgm.gif", 
-#' which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20))
 #' @param envelope the min and max envelope of each lineage for each time slice
 #' @param tree the phylogeny or multiple phylogenies that show the relationship between species
 #' @param filename filename of output
@@ -9,6 +9,7 @@
 #' @param path path to the directory where the results should be saved
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @details Animated gif of species richness through time
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @importFrom utils data
@@ -35,7 +36,7 @@
 #' animatedplot <- plotAnimatedPPGMMultiPhylo(envelope,sampletrees,which.biovars=1, path=tempdir())}
 
 
-plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
+plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20)){
   if(path==""){out=getwd()}
   if(path!=""){out=paste(getwd(),"/",substr(path,1,nchar(path)-1),sep="")}
   #load paleoclimate data
@@ -53,25 +54,26 @@ plotAnimatedPPGMMultiPhylo <- function(envelope, tree, filename="ppgm.gif", whic
   richnesscount<-as.list(array(NA,dim=length(tree)))
   for(tr in 1:length(tree)){
     temp_min[[tr]]<-lapply(1:length(paleoclimate),function(i){
-      temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree[[tr]],envelope[[tr]][,2,j])})
+      temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[[i]],tree[[tr]],envelope[[tr]][,2,j])})
       temp<-t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
       return(temp)})
     temp_max[[tr]]<-lapply(1:length(paleoclimate),function(i){
-      temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree[[tr]],envelope[[tr]][,5,j])})
+      temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[[i]],tree[[tr]],envelope[[tr]][,5,j])})
       temp<-t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
       return(temp)})
-    richnesscount[[tr]]<-lapply(1:length(paleoclimate), function(j){
+    for (j in 1:length(paleoclimate)){
       hld<-array(0,dim=length(paleoclimate[[j]][,1]))
       for(i in 1:length(temp_min[[tr]][[j]][1,])){
-        matching<-
-          sapply(1:length(which.biovars),function(x){paleoclimate[[j]][,which.biovars[x]+3]>temp_min[[tr]][[j]][1:length(which.biovars)*2,i][x] & paleoclimate[[j]][
-            ,which.biovars[x]+3]<temp_max[[tr]][[j]][1:length(which.biovars)*2,i][x]})
+        matching <- sapply(1:length(which.biovars),function(x){
+          paleoclimate[[j]][,which.biovars[x]+3]>temp_min[[tr]][[j]][1:length(which.biovars)*2,i][x] & 
+            paleoclimate[[j]][,which.biovars[x]+3]<temp_max[[tr]][[j]][1:length(which.biovars)*2,i][x]
+          })
         matching<-which(rowSums(matching)==length(which.biovars),arr.ind=TRUE)
         hld[matching]<-hld[matching]+1
       }
       hld[which(hld==0,arr.ind=TRUE)]=NA
-      return(hld)
-    })
+    }
+    richnesscount[[tr]] <-hld
   }
   oldpar <- par(no.readonly = TRUE)
   on.exit(par(oldpar))

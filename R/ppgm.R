@@ -113,7 +113,7 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
     #get bioclimate envelopes for species and nodes
     envelope[[tr]]<-getEnvelopes(treedata_min[[tr]],treedata_max[[tr]],node_est[[tr]])
     #get data from geo displacement
-    temp<-getGeoRate(envelope[[tr]],tree=trees[[tr]],which.biovars=which.biovars)
+    temp<-getGeoRate(envelope[[tr]],tree=trees[[tr]],which.biovars=which.biovars,use.paleoclimate = use.paleoclimate, paleoclimateUser = paleoclimateUser, layerAge = layerAge)
     geo_center[tr,,,]<-temp$geo_center
     geo_size[tr,,,]<-temp$geo_size
   }

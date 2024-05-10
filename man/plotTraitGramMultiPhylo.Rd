@@ -44,7 +44,8 @@ sample <-sample(sampletrees,5)
 \donttest{test_ppgm <- ppgm(occurrences = occurrences,trees = sample, 
 model = "BM", which.biovars = c(1), bounds = bounds, 
 control = list(niter = 20))}
-\dontrun{plotTraitGramMultiPhylo(test_ppgm$treedata_min,test_ppgm$treedata_max,test_ppgm$node_est)}
+\dontrun{plotTraitGramMultiPhylo(test_ppgm$treedata_min,
+test_ppgm$treedata_max,test_ppgm$node_est)}
 }
 \seealso{
 plotTraitGram

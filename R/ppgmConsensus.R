@@ -164,6 +164,7 @@ ppgmConsensus <- function(occurrences, fossils = FALSE, trees, fossils.edges = F
   }
   if(verbose){
     return(list(cem=cem,
+                envelope=envelope,
                 geo_move=geo_move,
                 change_geo_center=geo_center,
                 change_geo_size=geo_size,
