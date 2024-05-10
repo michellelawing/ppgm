@@ -4,9 +4,10 @@
 #' model = "BM", permut = 1, only.biovars = TRUE, which.biovars = c(1:19), 
 #' path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, 
 #' plot.GeoRates = FALSE, bounds = list(), control = list(), 
-#' use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE)
+#' use.paleoclimate = TRUE, paleoclimateUser = NULL, layerAge=c(0:20), 
+#' verbose = TRUE)
 #' @param occurrences a matrix with three columns of species name, longitude, and latitude, in that order, and rows that are entries for species occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19.
-#' @param fossils a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
+#' @param fossils a matrix with four columns of min age, max age, longitude, and latitude, in that order, and rows that are entries for fossil occurrences. The bioclimate variables can be included for each occurrence in following columns. They must be in order 1 through 19. All 19 variables must be included at this stage, variable selection is done with the argument: "which.biovars".
 #' @param trees phylogenies of species from first column of occurrences argument. Object of class multiphylo.
 #' @param fossils.edges a vector of edges that the fossils belong to. Must be in the same order of the fossils argument. If fossils.edges is false, the the function randomly assigns the location of the fossils depending on the age (see details for more information).
 #' @param model the model of evolution to use to estimate ancestor nodes. Argument is passed onto to function nodeEstimate.
@@ -21,6 +22,7 @@
 #' @param control settings used for optimisation of model likelihood. Passes to \code{geiger::fitContinuous}
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19.
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @param verbose default true, returns all outputs. If FALSE then returns only climate envelopes and geographic data
 #' @details If the 19 bioclimate variables are not supplied with the occurrences or with the fossils, they will be extracted from the closest 50km point location in the modern or paleoclimate maps that are loaded in with this function. The paleoclimate maps are isotopically scaled between general circulation models (see Lawing and Polly 2011; Rodder et al. 2013) and modern climate (see Hijmans et al. 2005). The fossils paleoclimate data is extracted to the closest million year paleoclimate map. Paleoclimate maps are derived at one million year intervals for the past 20 Ma. The tree (phylogeny) should be dichotomous and the species names should match the names in the first column of the occurrences argument.
 #' @return \code{cem} Estimate of climate envelope for each species in present time. A data frame containing species and min mean and max of biovars specified with \code{which.biovars}.
@@ -51,7 +53,7 @@
 
 ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, model = "BM", permut = 1, only.biovars = TRUE,
                 which.biovars = c(1:19), path = "", plot.TraitGram = FALSE, plot.AnimatedMaps = FALSE, plot.GeoRates = FALSE,
-                bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, verbose = TRUE){
+                bounds = list(), control = list(), use.paleoclimate = TRUE, paleoclimateUser = NULL, layerAge = c(0:20), verbose = TRUE){
   if(is(trees,"phylo")){
     stop("ERROR: only one tree supplied. Please use ppgmConsensus")
   }
@@ -59,17 +61,6 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
   alpha.trans <- as.integer(255 / (1 + log(length(trees))))
   #assign rownames to fossils
   if(length(fossils)!=1){rownames(fossils)<-paste("fossil",1:length(fossils[,1]),sep="")}
-  #Extract bioclim variables for species occurrences, if not supplied by user
-  if(only.biovars) {
-    occurrences<-getBioclimVars(occurrences,which.biovars)
-    if(length(fossils)!=1){
-      fossils<-getBioclimVars(fossils,which.biovars)
-    }
-  }
-  #check the occurrences variable conforms with requirements
-  if(length(occurrences[1, ]) < 4) {
-    return ("ERROR: There are less than four columns for the occurrences input. Check that occurrences input conforms to requirements.")
-  }
   #load paleoclimate data
   if(use.paleoclimate) {
     utils::data(paleoclimate) #uses paleoclimate data from package
@@ -79,6 +70,14 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
     } else {
       paleoclimate <- paleoclimateUser
     }
+  }
+  #Extract bioclim variables for species occurrences, if not supplied by user
+  if(only.biovars) {
+    occurrences<-getBioclimVars(occurrences, which.biovars, use.paleoclimate, paleoclimateUser, layerAge)
+  }
+  #check the occurrences variable conforms with requirements
+  if(length(occurrences[1, ]) < 4) {
+    return ("ERROR: There are less than four columns for the occurrences input. Check that occurrences input conforms to requirements.")
   }
   #create empty lists for outputs
   geo_center<-array(NA,dim=c(length(trees),length(unique(occurrences$Species)),length(paleoclimate),length(paleoclimate)))
@@ -105,7 +104,7 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
     #to estimate nodes, place fossils randomly or as specified on edges from fossils.edges argument
     full_est <- list()
     for(pr in 1:permut){
-      full_est[[pr]] <- nodeEstimateEnvelopes(treedata_min=treedata_min[[tr]],treedata_max=treedata_max[[tr]],fossils=fossils,fossils.edges=fossils.edges,model=model,bounds=bounds,control=control)
+      full_est[[pr]] <- nodeEstimateEnvelopes(treedata_min=treedata_min[[tr]], treedata_max=treedata_max[[tr]], fossils=fossils, fossils.edges=fossils.edges, model=model, bounds=bounds, control=control, which.biovars=which.biovars, paleoclimateUser=paleoclimateUser, use.paleoclimate=use.paleoclimate, layerAge=layerAge)
     }
     #####################
     node_est[[tr]]<-lapply(1:permut, function(p) full_est[[p]]$est)
@@ -114,22 +113,22 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
     #get bioclimate envelopes for species and nodes
     envelope[[tr]]<-getEnvelopes(treedata_min[[tr]],treedata_max[[tr]],node_est[[tr]])
     #get data from geo displacement
-    temp<-getGeoRate(envelope[[tr]],tree=trees[[tr]],which.biovars=which.biovars)
+    temp<-getGeoRate(envelope[[tr]],tree=trees[[tr]],which.biovars=which.biovars,use.paleoclimate = use.paleoclimate, paleoclimateUser = paleoclimateUser, layerAge = layerAge)
     geo_center[tr,,,]<-temp$geo_center
     geo_size[tr,,,]<-temp$geo_size
   }
   time_int<-temp$time_int
   #plot permutations
   if(plot.TraitGram){
-    plotTraitGramMultiPhylo(treedata_min,treedata_max,node_est,fossils=fossils,which.biovars=which.biovars,path=path)
+    plotTraitGramMultiPhylo(treedata_min, treedata_max, node_est, fossils=fossils, which.biovars=which.biovars, path=path, paleoclimateUser=paleoclimateUser, use.paleoclimate=use.paleoclimate, layerAge=layerAge)
   }
   #plot animated maps
   if(plot.AnimatedMaps){
-    plotAnimatedPPGMMultiPhylo(envelope,tree=trees,filename="ppgm.gif",which.biovars=which.biovars,path=path)
+    plotAnimatedPPGMMultiPhylo(envelope, tree=trees, filename="ppgm.gif", which.biovars=which.biovars, path=path)
   }
   #plot geo rates
   if(plot.GeoRates){
-    plotGeoRates(geo_center,geo_size,time_int,trees,path=path)
+    plotGeoRates(geo_center, geo_size, time_int, trees, path=path)
   }
   lineage_geo_center=array(NA,dim=c(length(trees),length(geo_center[1,,1,1])))
   for(tr in 1:length(trees)){
@@ -146,10 +145,10 @@ ppgm <- function(occurrences, fossils = FALSE, trees, fossils.edges = FALSE, mod
       lineage_geo_size[tr,l]=(mean((geo_size[tr,l,,]/time_int)[lower.tri(geo_size[tr,l,,]/time_int)],na.rm=T))
     }
   }
-  cem<-data.frame(sp_data_min,sp_data_mean,sp_data_max)
-  names(cem)<-c(paste(colnames(sp_data_mean),"Min",sep=""),paste(colnames(sp_data_mean),"Mean",sep=""),paste(colnames(sp_data_mean),"Max",sep=""))
-  geo_move<-data.frame(colMeans(lineage_geo_center,na.rm=T),colMeans(lineage_geo_size,na.rm=T))
-  names(geo_move)<-c("RateGeoCenter","RateGeoSize")
+  cem <- data.frame(sp_data_min,sp_data_mean,sp_data_max)
+  names(cem) <- c(paste(colnames(sp_data_mean),"Min",sep=""),paste(colnames(sp_data_mean),"Mean",sep=""),paste(colnames(sp_data_mean),"Max",sep=""))
+  geo_move <- data.frame(colMeans(lineage_geo_center,na.rm=T),colMeans(lineage_geo_size,na.rm=T))
+  names(geo_move) <- c("RateGeoCenter","RateGeoSize")
   #print model aicc if model estimated
   print_table_min <- list()
   print_table_max <- list()

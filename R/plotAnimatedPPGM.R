@@ -1,7 +1,7 @@
 #' @title plotAnimatedPPGM
 #' @description This function creates an animated gif showing the change in modelled suitable habitat through time in geographic space.
 #' @usage plotAnimatedPPGM(envelope, tree, filename="ppgm.gif", which.biovars, 
-#' path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
+#' path="", use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20))
 #' @param envelope the min and max envelope of each lineage for each time slice
 #' @param tree the phylogeny or multiple phylogenies that show the relationship between species
 #' @param filename desired filename of output
@@ -9,6 +9,7 @@
 #' @param path path to the directory where the results should be saved
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
+#' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
 #' @details Requires ImageMagick or GraphicsMagick to be installed on the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
 #' @return An animated gif of species through time
 #' @author A. Michelle Lawing, Alexandra F. C. Howard, Maria-Aleja Hurtado-Materon
@@ -32,7 +33,7 @@
 #' animatedplot <- plotAnimatedPPGM(example_getEnvelopes,tree,which.biovars=1,path=tempdir())}
 
 
-plotAnimatedPPGM<-function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL){
+plotAnimatedPPGM<-function(envelope, tree, filename="ppgm.gif", which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20)){
   #load paleoclimate data: isotopically scaled paleoclimate bioclimate variables for North America
   if(use.paleoclimate) {
     paleoclimate <- paleoclimate #uses paleoclimate data from package
@@ -44,11 +45,11 @@ plotAnimatedPPGM<-function(envelope, tree, filename="ppgm.gif", which.biovars, p
     }
   }
   temp_min<-lapply(1:length(paleoclimate),function(i){
-    temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,2,j])})
+    temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[[i]],tree,envelope[,2,j])})
     temp<-t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
   temp_max<-lapply(1:length(paleoclimate),function(i){
-    temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(i-1,tree,envelope[,5,j])})
+    temp<-lapply(1:length(which.biovars),function(j){getTimeSlice(layerAge[[i]],tree,envelope[,5,j])})
     temp<-t(array(unlist(temp),dim=c(length(unlist(temp[[1]]$edge)),2*length(which.biovars))))
     return(temp)})
   richnesscount<-lapply(1:length(paleoclimate), function(j){

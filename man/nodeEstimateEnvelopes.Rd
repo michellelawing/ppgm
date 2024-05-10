@@ -4,15 +4,17 @@
 \alias{nodeEstimateEnvelopes}
 \title{nodeEstimateEnvelopes}
 \usage{
-nodeEstimateEnvelopes(treedata_min, treedata_max, fossils=FALSE, fossils.edges=FALSE, 
-model="BM", bounds=list(), control=list())
+nodeEstimateEnvelopes(treedata_min, treedata_max, fossils=FALSE, 
+fossils.edges=FALSE, model="BM", bounds=list(), control=list(), 
+use.paleoclimate = TRUE, paleoclimateUser = NULL, layerAge = c(0:20), 
+which.biovars = which.biovars)
 }
 \arguments{
 \item{treedata_min}{tree data object with min estimate of the climate envelope – list where first object is phylogeny, and second object is array of species with climate data variables (species must match)}
 
 \item{treedata_max}{tree data object with max estimate of the climate envelope}
 
-\item{fossils}{the estimate of the climate envelope of the fossil occurrences}
+\item{fossils}{a matrix with three columns of age, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.}
 
 \item{fossils.edges}{the edge number that the fossil occurs on}
 
@@ -21,6 +23,14 @@ model="BM", bounds=list(), control=list())
 \item{bounds}{bounds used for the model, passes to \code{fitContinuous()}, uses default if none specified.}
 
 \item{control}{setting used for optimization of the model likelihood. Passes to \code{fitContinuous()}.}
+
+\item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
+
+\item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
+
+\item{which.biovars}{A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).}
 }
 \value{
 an object of the class "nodeEstimate".
@@ -46,7 +56,7 @@ an object of the class "nodeEstimate".
 \code{fitted}   if model = "estimate", returned values from the best fit model of evolution.
 }
 \description{
-This function estimates nodes with the placement of fossils on randomly assigned or specified edges on a tree.
+This function estimates climate envelopes at nodes with the optional placement of fossils on randomly assigned or specified edges on a tree.
 }
 \details{
 function adds fossils to trees according to \code{addFossil()}, then passes to \code{nodeEstimate()}.
@@ -55,17 +65,14 @@ function adds fossils to trees according to \code{addFossil()}, then passes to \
 data(sampletrees)
 sampletrees <- sample(sampletrees,5)
 data(occurrences)
-data(scel_fossils)
-occu <- getBioclimVars(occurrences, which.biovars=1)
-sp_data_min<- tapply(occu[,4],occu$Species,min)
-sp_data_max<- tapply(occu[,4],occu$Species,max)
-ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
-ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
-colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-\donttest{biofossils <- getBioclimVars(scel_fossils,which.biovars=1)
-rownames(biofossils)<-paste("fossil",1:length(biofossils[,1]),sep="")
-nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
-model="BM",fossils=biofossils,
+occu <- getBioclimVars(occurrences, which.biovars=c(1,2))
+sp_data_min<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,min))
+sp_data_max<-sapply(4:5,function(x) tapply(occu[,x],occu$Species,max))
+ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min, sort=TRUE)
+ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max, sort=TRUE)
+colnames(ex_min$data)<- colnames(ex_max$data)<-c("bio1","bio2")  #labels biovars
+\donttest{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
+model="BM",which.biovars=c(1,2),
 bounds=list(sigsq = c(min = 0, max = 1000000)))}
 }
 \seealso{

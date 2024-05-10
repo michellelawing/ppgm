@@ -5,7 +5,7 @@
 \title{getGeoRate}
 \usage{
 getGeoRate(envelope, tree, which.biovars, use.paleoclimate=TRUE, 
-paleoclimateUser=NULL)
+paleoclimateUser=NULL, layerAge=c(0:20))
 }
 \arguments{
 \item{envelope}{the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}}
@@ -17,6 +17,8 @@ paleoclimateUser=NULL)
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 }
 \value{
 \code{geo_center} change in geographic center of suitable climate envelope
@@ -44,7 +46,7 @@ treedata_max <- geiger::treedata(tree,sp_data_max,sort=TRUE,warnings=F)
 \donttest{full_est <- nodeEstimateEnvelopes(treedata_min,treedata_max)
 node_est <- full_est$est
 example_getEnvelopes <- getEnvelopes(treedata_min, treedata_max, node_est)
-example_getGeoRate <- getGeoRate(example_getEnvelopes, tree,which.biovars=1)}
+example_getGeoRate <- getGeoRate(example_getEnvelopes, tree, which.biovars=1)}
 }
 \seealso{
 \code{getEnvelopes()}

@@ -5,7 +5,8 @@
 \title{plotTraitGram}
 \usage{
 plotTraitGram(treedata_min, treedata_max, node_est, fossils=FALSE, 
-which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
+which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL,
+layerAge=c(0:20))
 }
 \arguments{
 \item{treedata_min}{a tree data object with the min estimate of the climate envelope}
@@ -14,7 +15,7 @@ which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 
 \item{node_est}{the estimate of all the nodes, both min and max}
 
-\item{fossils}{a matrix with four columns of age to the closest million year integer, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.}
+\item{fossils}{a matrix with four columns of min age, max age, longitude, and latitude, in that order, and rows that are entries for fossil occurrences.}
 
 \item{which.biovars}{A vector of the numbers of the bioclimate variables that should be returned. The bioclimate variables number correspond to the Hijmans table at (https://www.worldclim.org/data/bioclim.html).}
 
@@ -23,6 +24,8 @@ which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL)
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 }
 \value{
 a trait gram for minimum and maximum of biovariables
@@ -33,17 +36,11 @@ Combine the node estimates based on random or specified fossil placement and plo
 \examples{
 data(sampletrees)
 data(occurrences)
-sampletrees <- sample(sampletrees,5)
-occurrences <- getBioclimVars(occurrences, which.biovars=1)
-sp_data_min<- tapply(occurrences[,4],occurrences$Species,min)
-sp_data_max<- tapply(occurrences[,4],occurrences$Species,max)
-ex_min <- geiger::treedata(sampletrees[[1]], sp_data_min)
-ex_max <- geiger::treedata(sampletrees[[1]], sp_data_max)
-colnames(ex_min$data)<- colnames(ex_max$data)<-"bio1"  #labels biovars
-\donttest{nodeest<- nodeEstimateEnvelopes(treedata_min=ex_min,treedata_max=ex_max, 
-model="BM", bounds=list(sigsq = c(min = 0, max = 1000000)))
-plotTraitGram(ex_min, ex_max, nodeest$est, which.biovars=1, 
-path=paste(tempdir(),"/",sep=""))}
+bounds <- list(sigsq = c(min = 0, max = 1000000))
+ex_mytree <- sampletrees[[3]] #single tree
+\donttest{test_con <- ppgmConsensus(occurrences = occurrences, trees = ex_mytree, 
+which.biovars = 1, bounds = bounds, control = list(niter = 20))}
+\dontrun{plotTraitGram(test_con$treedata_min,test_con$treedata_max,test_con$node_est)}
 }
 \seealso{
 plotTraitGramMultiPhylo

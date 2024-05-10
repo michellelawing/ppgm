@@ -6,7 +6,8 @@
 #' @format 'scel_fossils'
 #' A data frame where each row is a single fossil
 #' \describe{
-#'  \item{Age}{Closest age to nearest million year}
+#'  \item{MinAge}{Minimum age of fossil}
+#'  \item{MaxAge}{Maximum age of fossil}
 #'  \item{Longitude}{Longitude of occurrence}
 #'  \item{Latitude}{Latitude of occurence}
 #'}

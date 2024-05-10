@@ -5,7 +5,7 @@
 \title{getLineageClimate}
 \usage{
 getLineageClimate(envelope, tree, which.biovars, 
-use.paleoclimate=TRUE, paleoclimateUser=NULL)
+use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c(0:20))
 }
 \arguments{
 \item{envelope}{the min and max climate envelope of each lineage for each time slice, as outputted by \code{getEnvelopes()}}
@@ -17,6 +17,8 @@ use.paleoclimate=TRUE, paleoclimateUser=NULL)
 \item{use.paleoclimate}{if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided}
 
 \item{paleoclimateUser}{list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).}
+
+\item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 }
 \value{
 \code{matchedClim} list of occurrences points for each lineage, for each time slice of paleoclimate data

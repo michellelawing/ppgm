@@ -1,7 +1,7 @@
 Package: ppgm
 Type: Package
 Title: PaleoPhyloGeographic Modeling of Climate Niches and Species Distributions
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(person("A. Michelle","Lawing", role = c("aut","cph"), email = "alawing@tamu.edu"), person("Alexandra", "Howard", role = c("aut","cre"), email = "alexandra.howard@ag.tamu.edu"), person("Maria-Aleja", "Hurtado-Materon", role = "aut"))
 Description: Reconstruction of paleoclimate niches using phylogenetic comparative 
     methods and projection reconstructed niches onto paleoclimate maps.
@@ -18,10 +18,13 @@ Description: Reconstruction of paleoclimate niches using phylogenetic comparativ
     and diversification of spiny lizards (Sceloporus)"
     Rivera et al (2020) <doi:10.1111/jbi.13915> "Reconstructing historical shifts 
     in suitable habitat of Sceloporus lineages using phylogenetic niche modelling.".
-Imports: animation, ape, fields, geiger, methods, phangorn, phytools
+Imports: animation, ape, fields, geiger, methods, phangorn, phytools, stringi
 Depends: R (>= 4.3.0), R (>= 2.10), sp, sf
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 RoxygenNote: 7.3.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
