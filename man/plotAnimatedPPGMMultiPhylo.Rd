@@ -24,11 +24,14 @@ which.biovars, path="", use.paleoclimate=TRUE, paleoclimateUser=NULL, layerAge=c
 
 \item{layerAge}{vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data}
 }
+\value{
+An animated gif of species through time
+}
 \description{
 This function creates an animated gif showing the change in modeled suitable habitat through time in geographic space. It requires ImageMagick or GraphicsMagick to be previously installed in the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
 }
 \details{
-Animated gif of species richness through time
+Requires ImageMagick or GraphicsMagick to be installed on the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
 }
 \examples{
 data(sampletrees)

@@ -10,7 +10,8 @@
 #' @param use.paleoclimate if left blank, default North America paleoclimate data is used. If FALSE, user submitted paleoclimate must be provided
 #' @param paleoclimateUser list of data frames with paleoclimates, must be dataframes with columns: GlobalID, Longitude, Latitude, bio1, bio2,...,bio19. (see \code{getBioclimvars()}).
 #' @param layerAge vector with the ages of the paleoclimate dataframes, if using user submitted paleoclimate data
-#' @details Animated gif of species richness through time
+#' @details Requires ImageMagick or GraphicsMagick to be installed on the operating system. This is easy to do if you have macports. Just type sudo port install ImageMagick into terminal.
+#' @return An animated gif of species through time
 #' @author A. Michelle Lawing, Alexandra F. C. Howard
 #' @importFrom utils data
 #' @importFrom animation saveGIF
