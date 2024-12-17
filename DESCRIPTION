@@ -1,7 +1,7 @@
 Package: ppgm
 Type: Package
 Title: PaleoPhyloGeographic Modeling of Climate Niches and Species Distributions
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: c(person("A. Michelle","Lawing", role = c("aut","cph"), email = "alawing@tamu.edu"), person("Alexandra", "Howard", role = c("aut","cre"), email = "alexandra.howard@ag.tamu.edu"), person("Maria-Aleja", "Hurtado-Materon", role = "aut"))
 Description: Reconstruction of paleoclimate niches using phylogenetic comparative 
     methods and projection reconstructed niches onto paleoclimate maps.
